@@ -1,0 +1,8 @@
+---
+title: "Double surprise"
+format:
+  html:
+    page-layout: full
+---
+
+# Surprise
