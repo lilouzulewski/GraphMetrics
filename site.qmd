@@ -36,6 +36,7 @@ Sort_Columns <- function(data) {
 
 ```{r}
 Dataframe_To_Graph <- function(data){
+
   # sort gene pairs in both datasets
   data <- Sort_Columns(data)
   
@@ -54,6 +55,7 @@ Dataframe_To_Graph <- function(data){
   
   # return the dataframe with the results
   return(graph)
+
 }
 ```
 
@@ -316,6 +318,7 @@ Global_Identity_Degree <- function(data1, data2, degree) {
   
   # return the results
   return(report)
+
 }
 ````
 
@@ -384,8 +387,8 @@ Degree_Identity_Comparison <- function(data1, data2, n) {
   
   # return the dataframe with the results
   return(graph)
+  
 }
 ```
-
 
 # Display of results
