@@ -1,8 +1,391 @@
 ---
-title: "Double surprise"
+title: "Comparison of networks inferred by DIANE and TDCor"
 format:
   html:
     page-layout: full
 ---
 
-# Surprise
+This document presents the comparative network tools inferred by DIANE and TDCor and their use, offering detailed explanations on the interpretation of the results provided by the functions implemented in R. The results encompass several metrics allowing an in-depth evaluation of the performance of the two methods. network inferences. This is a first step to enlighten users on the respective strengths and limitations of the two methods.
+
+# Metrics
+
+* Distribution of node degrees
+* Percentage of overall identity of the graph at degree 1 (i.e. percentage of common edges in each of the graphs compared by just looking at the nodes 2 by 2), with each time the percentage identity by taking the graph from TDCor or DIANE as reference
+* Comparison of degree of nodes versus percentage identity on the neighborhood of these nodes at degree 1 (i.e. percentage of common neighbors between the graphs compared) for each node of the analyzed graph  
+* Percentage of overall identity of the graph at degree 2, 3, or even n (i.e. percentage of common paths in each of the graphs compared by looking at 2, 3 or n nodes of distance), with each time the percentage of identity by taking the graph from TDCor or DIANE as a reference
+* Analysis of the directness/time delay indices of the edges predicted by TDCor and common with those predicted by DIANE
+* Analysis of common clusters ?
+
+# R functions
+
+```{r}
+Sort_Columns <- function(data) {
+  
+  # create a new dataframe with sorted gene pairs
+  data_sorted <- data.frame(from = pmin(data$from, data$to), to = pmax(data$from, data$to))
+  
+  # remove duplicate rows
+  data_sorted <- unique(data_sorted)
+  
+  # return the sorted dataframe
+  return(data_sorted)
+  
+}
+```
+
+
+```{r}
+Dataframe_To_Graph <- function(data){
+  # sort gene pairs in both datasets
+  data <- Sort_Columns(data)
+  
+  # concatenate gene pairs into a new dataframe for each dataset
+  gene_pairs <- cbind(from = data$from, to = data$to, pairs = paste(data$from, data$to, sep = "_"))
+  
+  # remove duplicates in gene pairs
+  unique_pairs <- unique(gene_pairs)
+  
+  # load required libraries
+  library(tidyr)
+  library(igraph)
+  
+  # create graph object from dataframe
+  graph <- graph_from_data_frame(unique_pairs, directed=FALSE)
+  
+  # return the dataframe with the results
+  return(graph)
+}
+```
+
+## Distribution of node degrees
+
+```{r}
+Degree_Distribution <- function(data) {
+  
+  # concatenate gene pairs into a new dataframe and remove duplicates in gene pairs
+  unique_pairs <- Sort_Columns(data)
+  
+  # initialize a vector to store counts
+  all_genes <- c(unique_pairs[,1], unique_pairs[,2])
+  unique_genes <- unique(all_genes)
+  counts <- numeric(length(unique_genes))
+  
+  # loop through genes
+  for (i in seq_along(unique_genes)) {
+    gene <- unique_genes[i]
+    # count the number of associated genes in both columns
+    count <- sum(unique_pairs[,1]==gene) + sum(unique_pairs[,2]==gene)
+    counts[i] <- count
+  }
+  
+  # create a dataframe with the results
+  result <- data.frame(gene=unique_genes, degree=counts)
+  
+  # remove duplicates
+  result <- result[!duplicated(result$gene), ]
+  
+  # return the results
+  return(result)
+  
+}
+```
+
+```{r}
+Degree_Distribution_Comparison <- function(data1, data2){
+  
+  # load the necessary library for the plot
+  library(ggplot2)
+  
+  # calculate degree counts for each database
+  degree_distribution_1 <- Degree_Distribution(data1)
+  degree_distribution_2 <- Degree_Distribution(data2)
+  
+  # create dataframe for creating comparison plot
+  df <- rbind(data.frame(degree_distribution_1, dataset = deparse(substitute(data1))),
+              data.frame(degree_distribution_2, dataset = deparse(substitute(data2))))
+  
+  # create histogram plot with ggplot
+  ggplot(df, aes(x=degree, y=after_stat(count), fill=dataset)) +
+    # display a histogram
+    geom_histogram(position="dodge", alpha=0.5) +
+    # customize legends
+    labs(x="Degree", 
+         y="Number of Nodes", 
+         title="Comparison of Degree Distributions",
+         fill=expression(underline("Dataset"))) +
+    # specify legend display
+    guides(color="none") +
+    # customize text elements
+    theme(strip.text.x=element_text(size=8),
+          plot.title=element_text(size=12, hjust=0.5, face="bold"),
+          legend.title=element_text(size=10))
+  
+}
+```
+
+## Percentage of overall identity of the graph at degree 1 
+
+```{r}
+Global_Identity <- function(data1, data2) {
+  
+  # check if data1 or data2 is empty
+  if (nrow(data1) == 0) {
+    return(list(
+      identity_percentage_ReferenceData1 = "NO NODE",
+      identity_percentage_ReferenceData2 = "/"
+    ))
+  }
+  if (nrow(data2) == 0) {
+    return(list(
+      identity_percentage_ReferenceData1 = "/",
+      identity_percentage_ReferenceData2 = "NO NODE"
+    ))
+  }
+  
+  # sort gene pairs in both datasets
+  data1 <- Sort_Columns(data1)
+  data2 <- Sort_Columns(data2)
+  
+  # concatenate gene pairs into a new dataframe for each dataset
+  gene_pairs_data1 <- cbind(from = data1$from, to = data1$to, pairs = paste(data1$from, data1$to, sep = "_"))
+  gene_pairs_data2 <- cbind(from = data2$from, to = data2$to, pairs = paste(data2$from, data2$to, sep = "_"))
+  
+  # remove duplicates in gene pairs
+  unique_pairs_data1 <- unique(gene_pairs_data1)
+  unique_pairs_data2 <- unique(gene_pairs_data2)
+  
+  # identify different gene pairs in each dataset
+  different_pairs_data1 <- setdiff(unique_pairs_data2[, 3], unique_pairs_data1[, 3])
+  different_pairs_data2 <- setdiff(unique_pairs_data1[, 3], unique_pairs_data2[, 3])
+  
+  # calculate the number of identical gene pairs in each dataset
+  num_identical_pairs_data1 <- length(unique_pairs_data2[, 3]) - length(different_pairs_data1)
+  num_identical_pairs_data2 <- length(unique_pairs_data1[, 3]) - length(different_pairs_data2)
+  
+  # calculate the percentage of identical gene pairs compared to the total number of unique pairs
+  identity_percentage_ReferenceData1 <- (num_identical_pairs_data1 / length(unique_pairs_data1[, 3])) * 100
+  identity_percentage_ReferenceData2 <- (num_identical_pairs_data2 / length(unique_pairs_data2[, 3])) * 100
+  
+  # construct the final report as a list
+  report <- list(
+    identity_percentage_ReferenceData1 = identity_percentage_ReferenceData1,
+    identity_percentage_ReferenceData2 = identity_percentage_ReferenceData2
+  )
+  
+  # return the results
+  return(report)
+  
+}
+```
+
+## Percentage of identity between two graphs as a function of node degree 
+
+```{r}
+Degree_VS_IdentityPercentage <- function(data1, data2){
+  
+  # determine the maximum degree
+  n <- max(Degree_Distribution(data1)$degree, Degree_Distribution(data2)$degree)
+  
+  # create a dataframe to store identity percentages
+  identity_percentages <- data.frame(degree = 1:n,
+                                     ReferenceData1 = numeric(n),
+                                     ReferenceData2 = numeric(n))
+  # initialize columns for data references
+  identity_percentages$ReferenceData1 <- 1
+  identity_percentages$ReferenceData2 <- 1
+  
+  # iterate over each degree
+  for (i in 1:n){
+    # extract genes lists for each dataset based on degree
+    genes_list_data1 <- Degree_Distribution(data1)$gene[Degree_Distribution(data1)$degree == i]
+    genes_list_data2 <- Degree_Distribution(data2)$gene[Degree_Distribution(data2)$degree == i]
+    
+    # initialize dataframes to store gene pairs
+    all_gene_pairs_data1 <- data.frame(from = character(), to = character())
+    all_gene_pairs_data2 <- data.frame(from = character(), to = character())
+    
+    # iterate over genes in each list
+    for (gene in genes_list_data1) {
+      # select rows where the gene is in the "from" or "to" column
+      gene_pairs_data1 <- data1[data1$from == gene | data1$to == gene, c("from", "to")]
+      # append gene pairs to all_gene_pairs_data1
+      all_gene_pairs_data1 <- rbind(all_gene_pairs_data1, gene_pairs_data1)
+    }
+    for (gene in genes_list_data2) {
+      gene_pairs_data2 <- data2[data2$from == gene | data2$to == gene, c("from", "to")]
+      all_gene_pairs_data2 <- rbind(all_gene_pairs_data2, gene_pairs_data2)
+    }
+    
+    # remove duplicate gene pairs
+    all_gene_pairs_data1 <- unique(all_gene_pairs_data1)
+    all_gene_pairs_data2 <- unique(all_gene_pairs_data2)
+    
+    # calculate identity percentages and store in the dataframe
+    identity_percentages$ReferenceData1[i] <- Global_Identity(all_gene_pairs_data1, all_gene_pairs_data2)$identity_percentage_ReferenceData1
+    identity_percentages$ReferenceData2[i] <- Global_Identity(all_gene_pairs_data1, all_gene_pairs_data2)$identity_percentage_ReferenceData2
+  }
+  
+  # create a dataframe for the graph
+  graph <- data.frame(degree = identity_percentages$degree,
+                      percentages = c(identity_percentages$ReferenceData1,
+                                      identity_percentages$ReferenceData2),
+                      reference = c(rep(deparse(substitute(data1)), length(identity_percentages$ReferenceData1)),
+                                    rep(deparse(substitute(data2)), length(identity_percentages$ReferenceData2))))
+  
+  # modify the values for red points and NA values to 0
+  graph$percentages[graph$percentages %in% c("NO NODE", "/")] <- NA
+  graph$color <- ifelse(is.na(graph$percentages), "Absent degree", as.character(graph$reference))
+  graph$percentages[graph$percentages %in% NA] <- 0
+  
+  # create the plot
+  library(ggplot2)
+  plot <- ggplot(graph, aes(x = degree, y = as.numeric(percentages), fill = reference, color = color)) +
+    # display a scatterplot
+    geom_point() +
+    # customize legends
+    labs(x = "Degree", 
+         y = "Identity Percentage", 
+         title = "Degree vs Identity Distributions",
+         color = expression(underline("Reference"))) +
+    # specify legend display
+    guides(fill = "none") +
+    # customize text elements
+    theme(strip.text.x = element_text(size = 8),
+          plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
+          legend.title = element_text(size = 10))
+  
+  # display the plot
+  print(plot)
+  
+  # return the dataframe with the results
+  return(identity_percentages)
+  
+}
+```
+
+## 
+
+```{r}
+Global_Identity_Degree <- function(data1, data2, degree) {
+  
+  # convert dataframes to graphs
+  graph_data1 <- Dataframe_To_Graph(data1)
+  graph_data2 <- Dataframe_To_Graph(data2)
+  
+  # initialize variables to store paths
+  paths_data1 <- c()
+  paths_data2 <- c()
+  
+  # find all simple paths in each graph up to a given degree
+  l_data1 <- unlist(lapply(V(graph_data1) , function(x) all_simple_paths(graph_data1, from=x, cutoff=degree)), recursive = FALSE)
+  l_data2 <- unlist(lapply(V(graph_data2) , function(x) all_simple_paths(graph_data2, from=x, cutoff=degree)), recursive = FALSE)
+  
+  # filter paths to only include those with the specified degree
+  l_data1 <- l_data1[lengths(l_data1) == degree + 1]
+  l_data2 <- l_data2[lengths(l_data2) == degree + 1]
+  
+  # convert paths to character IDs
+  paths_data1 <- lapply(1:length(l_data1), function(x) as_ids(l_data1[[x]]))
+  paths_data2 <- lapply(1:length(l_data2), function(x) as_ids(l_data2[[x]]))
+  
+  # combine paths into dataframes
+  paths_data1 <- do.call(rbind, paths_data1)
+  paths_data2 <- do.call(rbind, paths_data2)
+  
+  # combine paths and create a new column by uniting the paths
+  paths_data1 <- data.frame(c(paths_data1, unite(paths_data1, paths, sep="_")))
+  paths_data2 <- data.frame(c(paths_data2, unite(paths_data2, paths, sep="_")))
+  
+  # identify different gene pairs in each dataset
+  different_pairs_data1 <- setdiff(paths_data2[,degree+2], paths_data1[,degree+2])
+  different_pairs_data2 <- setdiff(paths_data1[,degree+2], paths_data2[,degree+2])
+  
+  # calculate the number of identical gene pairs in each dataset
+  num_identical_pairs_data1 <- length(paths_data2[,degree+1]) - length(different_pairs_data1)
+  num_identical_pairs_data2 <- length(paths_data1[,degree+1]) - length(different_pairs_data2)
+  
+  # calculate the percentage of identical gene pairs compared to the total number of unique pairs
+  identity_percentage_ReferenceData1 <- (num_identical_pairs_data1 / length(paths_data1[,degree+1])) * 100
+  identity_percentage_ReferenceData2 <- (num_identical_pairs_data2 / length(paths_data2[,degree+1])) * 100
+  
+  # construct the final report as a list
+  report <- list(
+    identity_percentage_ReferenceData1 = identity_percentage_ReferenceData1,
+    identity_percentage_ReferenceData2 = identity_percentage_ReferenceData2
+  )
+  
+  # return the results
+  return(report)
+}
+````
+
+```{r}
+Degree_Identity_Comparison <- function(data1, data2, n) {
+  
+  # convert dataframes to graphs
+  graph_data1 <- Dataframe_To_Graph(data1)
+  graph_data2 <- Dataframe_To_Graph(data2)
+  
+  # find all simple paths in each graph up to the specified degree
+  l_data1 <- unlist(lapply(V(graph_data1) , function(x) all_simple_paths(graph_data1, from=x, cutoff=n)), recursive = FALSE)
+  l_data2 <- unlist(lapply(V(graph_data2) , function(x) all_simple_paths(graph_data2, from=x, cutoff=n)), recursive = FALSE)
+  
+  # calculate the length of each path
+  lengths_paths_data1 <- sapply(l_data1, length)
+  lengths_paths_data2 <- sapply(l_data2, length)
+  
+  # find the maximum path length
+  longueur_max_data1 <- max(lengths_paths_data1)
+  longueur_max_data2 <- max(lengths_paths_data2)
+  
+  # determine the maximum degree to consider
+  n <- min(longueur_max_data1, longueur_max_data2) - 1
+  
+  # initialize dataframe to store identity percentages
+  graph <- data.frame(identity_percentage_ReferenceData1 = numeric(n),
+                      identity_percentage_ReferenceData2 = numeric(n))
+  
+  # loop over degrees and calculate identity percentages
+  for (i in 1:n){
+    # calculate identity percentages only if they are not equal to 0
+    if (Global_Identity_Degree(data1,data2,i)$identity_percentage_ReferenceData1 != 0 ||
+        Global_Identity_Degree(data1,data2,i)$identity_percentage_ReferenceData2 != 0) {
+      graph$identity_percentage_ReferenceData1[i] <- Global_Identity_Degree(data1,data2,i)$identity_percentage_ReferenceData1
+      graph$identity_percentage_ReferenceData2[i] <- Global_Identity_Degree(data1,data2,i)$identity_percentage_ReferenceData2
+    }
+  }
+  
+  # create a dataframe for the graph
+  df <- data.frame(length = seq(1,n),
+                   percentages = c(graph$identity_percentage_ReferenceData1,
+                                   graph$identity_percentage_ReferenceData2),
+                   reference = c(rep(deparse(substitute(data1)), length(graph$identity_percentage_ReferenceData1)),
+                                 rep(deparse(substitute(data2)), length(graph$identity_percentage_ReferenceData2))))
+  
+  # create the plot
+  library(ggplot2)
+  plot <- ggplot(df, aes(x = length, y = as.numeric(percentages), color = reference)) +
+    # display a scatterplot
+    geom_point() +
+    # customize legends
+    labs(x = "Length of Paths", 
+         y = "Identity Percentage", 
+         title = "Length of Paths vs Identity Percentages",
+         color = expression(underline("Reference"))) +
+    # customize scales
+    scale_x_continuous(breaks=c(seq(1, n, by = 1))) +
+    # customize text elements
+    theme(strip.text.x = element_text(size = 8),
+          plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
+          legend.title = element_text(size = 10))
+  
+  # print the plot
+  print(plot)
+  
+  # return the dataframe with the results
+  return(graph)
+}
+```
+
+
+# Display of results
