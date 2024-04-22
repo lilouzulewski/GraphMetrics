@@ -15,7 +15,7 @@ The GraphMetrics repository contains R scripts for computing and analyzing vario
 
 ## Usage
 
-To utilize the metrics provided in this repository, follow these steps:
+To use the metrics provided in this repository, follow these steps:
 
 1. Ensure your dataset contains two columns named `from` and `to`, representing the genes connected in the graph without any specific orientation.
 2. Use the provided R functions to compute the desired metrics on your dataset.

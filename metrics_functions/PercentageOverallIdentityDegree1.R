@@ -1,4 +1,4 @@
-# GLOBAL IDENTITY PERCENTAGE OF TWO DEGREE 1 GRAPHS
+# GLOBAL IDENTITY PERCENTAGE BETWEEN TWO GRAPHS OF DEGREE 1
 # formatting the databases:
 # columns should be named "from" and "to"
 
