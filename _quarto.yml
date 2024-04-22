@@ -19,6 +19,9 @@ format:
     code-overflow: wrap
     fig-responsive: true
     fig-format: svg
+    theme:
+      light: flatly
+      dark: darkly
 execute:
   warning: false
   error: true

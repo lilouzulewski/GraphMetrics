@@ -19,8 +19,20 @@ Here are the selected metrics that collectively offer a comprehensive understand
 * **Analysis of common clusters**: This metric involves identifying and analyzing clusters of nodes that are common between the graphs. It examines how nodes are grouped together into clusters and identifies clusters that are present in both graphs, providing insights into common structural patterns.
 
 # R functions
+## Prerequisites for the metrics
+
+To implement these metrics, certain R functions were required.
+
+::: {.callout-important appearance="simple"}
+## Data format
+To apply all the following functions to your dataset, it should contain two columns named `from` and `to`, representing the genes connected in the graph without any specific orientation.
+:::
 
 ```{r}
+#| code-fold: true
+#| code-summary: "Click for more details"
+#| output: true
+
 Sort_Columns <- function(data) {
   
   # create a new dataframe with sorted gene pairs
