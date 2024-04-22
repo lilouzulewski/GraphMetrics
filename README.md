@@ -6,10 +6,10 @@ The GraphMetrics repository contains R scripts for computing and analyzing vario
 
 ### Metrics Included:
 
-1. **Distribution of Node Degrees**
-2. **Percentage of Overall Identity at Degree 1**
-3. **Comparison of Node Degrees vs. Percentage Identity**
-4. **Percentage of Overall Identity at Higher Degrees**
+1. [**Distribution of Node Degrees**](./metrics_functions/DistributionNodeDegrees.R)
+2. [**Percentage of Overall Identity at Degree 1**](./metrics_functions/PercentageOverallIdentityDegree1.R)
+3. [**Comparison of Node Degrees vs. Percentage Identity**](./metrics_functions/ComparisonNodeDegreesPercentageIdentity.R)
+4. [**Percentage of Overall Identity at Higher Degrees**](./metrics_functions/PercentageOverallIdentityHigherDegrees.R)
 5. **Directness/Time Delay Indices Analysis**
 6. **Common Clusters Analysis**
 
