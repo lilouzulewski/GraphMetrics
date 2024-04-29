@@ -29,8 +29,10 @@ First, the `Sort_Columns()` function is designed to sort the gene pairs in a dat
 ```
 
 ::: {.callout-tip icon=false collapse="true" title="`Sort_Columns()`"}
-```{r class.source="watch-out"}
+```{r}
 #| output: true
+#| code-fold: true
+#| code-summary: "Click for more details."
 #| code-overflow: scroll
 #| highlight-style: github
 
