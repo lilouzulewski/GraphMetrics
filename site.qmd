@@ -51,9 +51,13 @@ Sort_Columns <- function(data) {
 ```
 :::
 
+The function `Dataframe_To_Graph()` converts a dataframe containing gene pairs into a graph object. After sorting the gene pairs in the input dataframe to ensure consistency in representation, it concatenates the `from` and `to` columns into a new dataframe called `gene_pairs` and removes any duplicate rows. Then it creates a graph object from the unique gene pairs dataframe using the `graph_from_data_frame()` function from the 'igraph' package with the `directed` parameter set to `FALSE`. Finally, it returns the constructed graph object.
+
 ::: {.callout-tip icon=false collapse="true" title="`Dataframe_To_Graph()`"}
 ```{r}
 #| output: true
+#| code-fold: true
+#| code-summary: "Click for more details."
 #| code-overflow: scroll
 
 Dataframe_To_Graph <- function(data){
