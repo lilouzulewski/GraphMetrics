@@ -1,21 +1,4 @@
-# SORT GENE PAIRS IN A DATAFRAME
-# formatting the databases:
-# columns should be named "from" and "to"
-
-Sort_Columns <- function(data) {
-  
-  # create a new dataframe with sorted gene pairs
-  data_sorted <- data.frame(from = pmin(data$from, data$to), to = pmax(data$from, data$to))
-  
-  # remove duplicate rows
-  data_sorted <- unique(data_sorted)
-  
-  # return the sorted dataframe
-  return(data_sorted)
-  
-}
-
-# DISTRIBUTION OF NODES FROM A DATABASE
+# DISTRIBUTION OF NODE DEGREES FROM A DATABASE
 # formatting the database:
 # columns should be named "from" and "to"
 

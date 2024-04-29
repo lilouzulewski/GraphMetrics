@@ -1,0 +1,11 @@
+.watch-out {
+    background-color: lightpink;
+}
+
+.custom-pandoc{
+ 
+    code span.do {
+        color: gold;
+        font-style: italic;
+   }
+ }

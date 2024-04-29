@@ -1,28 +1,3 @@
-# DATAFRAMES TO GRAPHS
-
-# function to convert a dataframe to a graph
-Dataframe_To_Graph <- function(data){
-  # sort gene pairs in both datasets
-  data <- Sort_Columns(data)
-  
-  # concatenate gene pairs into a new dataframe for each dataset
-  gene_pairs <- cbind(from = data$from, to = data$to, pairs = paste(data$from, data$to, sep = "_"))
-  
-  # remove duplicates in gene pairs
-  unique_pairs <- unique(gene_pairs)
-  
-  # load required libraries
-  library(tidyr)
-  library(igraph)
-  
-  # create graph object from dataframe
-  graph <- graph_from_data_frame(unique_pairs, directed=FALSE)
-  
-  # return the dataframe with the results
-  return(graph)
-}
-
-
 # GLOBAL IDENTITY PERCENTAGE OF A GRAPH AT DEGREE n
 
 # function to calculate global identity percentage of a graph at a given degree
