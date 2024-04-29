@@ -2,13 +2,11 @@
 title: "Comparison of networks inferred by DIANE and TDCor"
 format:
   html:
-    css: styles.css
     page-layout: full
     code-block-bg: true
     code-block-border-left: "#696969"
-    highlight-style: oblivion
 ---
-code-block-bg: true
+
 This document presents the comparative network tools inferred by DIANE and TDCor and their use, offering detailed explanations on the interpretation of the results provided by the functions implemented in R. The results encompass several metrics allowing an in-depth evaluation of the performance of the two methods. This is a first step to enlighten users on the respective strengths and limitations of the two methods.
 
 # Prerequisites
