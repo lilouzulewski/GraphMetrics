@@ -51,7 +51,7 @@ Sort_Columns <- function(data) {
 ```
 :::
 
-The function `Dataframe_To_Graph()` converts a dataframe containing gene pairs into a graph object. After sorting the gene pairs in the input dataframe to ensure consistency in representation, it concatenates the `from` and `to` columns into a new dataframe called `gene_pairs` and removes any duplicate rows. Then it creates a graph object from the unique gene pairs dataframe using the `graph_from_data_frame()` function from the 'igraph' package with the `directed` parameter set to `FALSE`. Finally, it returns the constructed graph object.
+Then, the function `Dataframe_To_Graph()` converts a dataframe containing gene pairs into a graph object. After sorting the gene pairs in the input dataframe to ensure consistency in representation, it concatenates the `from` and `to` columns into a new dataframe called `gene_pairs` and removes any duplicate rows. Then, it creates a graph object from the unique gene pairs dataframe using the `graph_from_data_frame()` function and it returns the constructed graph object.
 
 ::: {.callout-tip icon=false collapse="true" title="`Dataframe_To_Graph()`"}
 ```{r}
@@ -90,20 +90,11 @@ Dataframe_To_Graph <- function(data){
 
 Here are the selected metrics that collectively offer a comprehensive understanding of the similarities and differences between two graphs, enabling a detailed analysis of their structural and functional properties.
 
-* **Distribution of node degrees**: This metric examines the distribution of the number of connections (degrees) of nodes in the graph. It provides insights into the connectivity patterns within the graph.
-
-
-
-* **Percentage of overall identity of the graph at degree 1**: This metric calculates the percentage of common edges between two graphs at degree 1. It compares each edge pair in the graphs to identify common edges and calculates the percentage of common edges compared to the total number of edges by taking the graph from each method as reference.
-* **Comparison of degree of nodes versus percentage identity on the neighborhood of these nodes at degree 1**: This metric examines the relationship between the degree of nodes and the percentage of common neighbors in the graphs. It calculates the percentage of common neighbors for each node in the graph at degree 1 and analyzes how this percentage varies with the degree of the nodes. 
-* **Percentage of overall identity of the graph at degree 2, 3, or even n**: This metric extends the analysis to higher degrees (beyond degree 1) by calculating the percentage of common paths of length 2, 3, or n between the graphs. It compares paths of increasing length and calculates the percentage of common paths compared to the total number of paths by taking the graph from each method as a reference.
-* **Analysis of the directness/time delay indices of the edges predicted by TDCor and common with those predicted by DIANE**: This metric involves analyzing the directness or time delay indices of edges predicted by TDCor and comparing them with edges predicted by DIANE. It examines how consistent the predictions are between the two methods.
-* **Analysis of common clusters**: This metric involves identifying and analyzing clusters of nodes that are common between the graphs. It examines how nodes are grouped together into clusters and identifies clusters that are present in both graphs, providing insights into common structural patterns.
-
-# R functions
-
 ## Distribution of node degrees
 
+This metric examines the distribution of the number of connections (degrees) of nodes in the graph. It provides insights into the connectivity patterns within the graph.
+
+::: {.callout-tip icon=false collapse="true" title="R functions"}
 ```{r}
 #| code-overflow: scroll
 
@@ -170,9 +161,18 @@ Degree_Distribution_Comparison <- function(data1, data2){
   
 }
 ```
+:::
 
-## Percentage of overall identity of the graph at degree 1 
 
+
+
+
+## Percentage of overall identity of the graph at degree 1
+
+This metric calculates the percentage of common edges between two graphs at degree 1. It compares each edge pair in the graphs to identify common edges and calculates the percentage of common edges compared to the total number of edges by taking the graph from each method as reference.
+
+
+::: {.callout-tip icon=false collapse="true" title="R functions"}
 ```{r}
 #| code-overflow: scroll
 Global_Identity <- function(data1, data2) {
@@ -227,7 +227,10 @@ Global_Identity <- function(data1, data2) {
 }
 ```
 
-## Percentage of identity between two graphs as a function of node degree 
+
+## Comparison of degree of nodes versus percentage identity on the neighborhood of these nodes at degree 1
+
+This metric examines the relationship between the degree of nodes and the percentage of common neighbors in the graphs. It calculates the percentage of common neighbors for each node in the graph at degree 1 and analyzes how this percentage varies with the degree of the nodes. 
 
 ```{r}
 #| code-overflow: scroll
@@ -440,5 +443,21 @@ Degree_Identity_Comparison <- function(data1, data2, n) {
 
 }
 ```
+:::
 
-# Display of results
+## Percentage of overall identity of the graph at degree 2, 3, or even n
+
+This metric extends the analysis to higher degrees (beyond degree 1) by calculating the percentage of common paths of length 2, 3, or n between the graphs. It compares paths of increasing length and calculates the percentage of common paths compared to the total number of paths by taking the graph from each method as a reference.
+
+
+
+
+
+## Analysis of the directness/time delay indices of the edges predicted by TDCor and common with those predicted by DIANE
+
+This metric involves analyzing the directness or time delay indices of edges predicted by TDCor and comparing them with edges predicted by DIANE. It examines how consistent the predictions are between the two methods.
+
+
+## Analysis of common clusters
+
+This metric involves identifying and analyzing clusters of nodes that are common between the graphs. It examines how nodes are grouped together into clusters and identifies clusters that are present in both graphs, providing insights into common structural patterns.
