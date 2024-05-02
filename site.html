@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.553">
+<meta name="generator" content="quarto-1.4.554">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -3079,15 +3079,14 @@ vertical-align: -.125em;
    
   <ul>
   <li><a href="#prerequisites" id="toc-prerequisites" class="nav-link active" data-scroll-target="#prerequisites">Prerequisites</a></li>
-  <li><a href="#metrics" id="toc-metrics" class="nav-link" data-scroll-target="#metrics">Graph Metrics</a></li>
-  <li><a href="#r-functions" id="toc-r-functions" class="nav-link" data-scroll-target="#r-functions">R functions</a>
+  <li><a href="#metrics" id="toc-metrics" class="nav-link" data-scroll-target="#metrics">Graph Metrics</a>
   <ul>
   <li><a href="#distribution-of-node-degrees" id="toc-distribution-of-node-degrees" class="nav-link" data-scroll-target="#distribution-of-node-degrees">Distribution of node degrees</a></li>
   <li><a href="#percentage-of-overall-identity-of-the-graph-at-degree-1" id="toc-percentage-of-overall-identity-of-the-graph-at-degree-1" class="nav-link" data-scroll-target="#percentage-of-overall-identity-of-the-graph-at-degree-1">Percentage of overall identity of the graph at degree 1</a></li>
-  <li><a href="#percentage-of-identity-between-two-graphs-as-a-function-of-node-degree" id="toc-percentage-of-identity-between-two-graphs-as-a-function-of-node-degree" class="nav-link" data-scroll-target="#percentage-of-identity-between-two-graphs-as-a-function-of-node-degree">Percentage of identity between two graphs as a function of node degree</a></li>
-  <li><a href="#section" id="toc-section" class="nav-link" data-scroll-target="#section"></a></li>
+  <li><a href="#percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n" id="toc-percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n" class="nav-link" data-scroll-target="#percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n">Percentage of overall identity of the graph at degree 2, 3, or even n</a></li>
+  <li><a href="#analysis-of-the-directnesstime-delay-indices-of-the-edges-predicted-by-tdcor-and-common-with-those-predicted-by-diane" id="toc-analysis-of-the-directnesstime-delay-indices-of-the-edges-predicted-by-tdcor-and-common-with-those-predicted-by-diane" class="nav-link" data-scroll-target="#analysis-of-the-directnesstime-delay-indices-of-the-edges-predicted-by-tdcor-and-common-with-those-predicted-by-diane">Analysis of the directness/time delay indices of the edges predicted by TDCor and common with those predicted by DIANE</a></li>
+  <li><a href="#analysis-of-common-clusters" id="toc-analysis-of-common-clusters" class="nav-link" data-scroll-target="#analysis-of-common-clusters">Analysis of common clusters</a></li>
   </ul></li>
-  <li><a href="#display-of-results" id="toc-display-of-results" class="nav-link" data-scroll-target="#display-of-results">Display of results</a></li>
   </ul>
 </nav>
 </div>
@@ -3183,7 +3182,7 @@ font-color: green;
 </div>
 </div>
 </div>
-<p>The function <code>Dataframe_To_Graph()</code> converts a dataframe containing gene pairs into a graph object. After sorting the gene pairs in the input dataframe to ensure consistency in representation, it concatenates the <code>from</code> and <code>to</code> columns into a new dataframe called <code>gene_pairs</code> and removes any duplicate rows. Then it creates a graph object from the unique gene pairs dataframe using the <code>graph_from_data_frame()</code> function from the ‘igraph’ package with the <code>directed</code> parameter set to <code>FALSE</code>. Finally, it returns the constructed graph object.</p>
+<p>Then, the function <code>Dataframe_To_Graph()</code> converts a dataframe containing gene pairs into a graph object. After sorting the gene pairs in the input dataframe to ensure consistency in representation, it concatenates the <code>from</code> and <code>to</code> columns into a new dataframe called <code>gene_pairs</code> and removes any duplicate rows. Then, it creates a graph object from the unique gene pairs dataframe using the <code>graph_from_data_frame()</code> function and it returns the constructed graph object.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled" title="`Dataframe_To_Graph()`">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -3230,19 +3229,21 @@ font-color: green;
 <section id="metrics" class="level1">
 <h1>Graph Metrics</h1>
 <p>Here are the selected metrics that collectively offer a comprehensive understanding of the similarities and differences between two graphs, enabling a detailed analysis of their structural and functional properties.</p>
-<ul>
-<li><p><strong>Distribution of node degrees</strong>: This metric examines the distribution of the number of connections (degrees) of nodes in the graph. It provides insights into the connectivity patterns within the graph.</p></li>
-<li><p><strong>Percentage of overall identity of the graph at degree 1</strong>: This metric calculates the percentage of common edges between two graphs at degree 1. It compares each edge pair in the graphs to identify common edges and calculates the percentage of common edges compared to the total number of edges by taking the graph from each method as reference.</p></li>
-<li><p><strong>Comparison of degree of nodes versus percentage identity on the neighborhood of these nodes at degree 1</strong>: This metric examines the relationship between the degree of nodes and the percentage of common neighbors in the graphs. It calculates the percentage of common neighbors for each node in the graph at degree 1 and analyzes how this percentage varies with the degree of the nodes.</p></li>
-<li><p><strong>Percentage of overall identity of the graph at degree 2, 3, or even n</strong>: This metric extends the analysis to higher degrees (beyond degree 1) by calculating the percentage of common paths of length 2, 3, or n between the graphs. It compares paths of increasing length and calculates the percentage of common paths compared to the total number of paths by taking the graph from each method as a reference.</p></li>
-<li><p><strong>Analysis of the directness/time delay indices of the edges predicted by TDCor and common with those predicted by DIANE</strong>: This metric involves analyzing the directness or time delay indices of edges predicted by TDCor and comparing them with edges predicted by DIANE. It examines how consistent the predictions are between the two methods.</p></li>
-<li><p><strong>Analysis of common clusters</strong>: This metric involves identifying and analyzing clusters of nodes that are common between the graphs. It examines how nodes are grouped together into clusters and identifies clusters that are present in both graphs, providing insights into common structural patterns.</p></li>
-</ul>
-</section>
-<section id="r-functions" class="level1">
-<h1>R functions</h1>
 <section id="distribution-of-node-degrees" class="level2">
 <h2 class="anchored" data-anchor-id="distribution-of-node-degrees">Distribution of node degrees</h2>
+<p>This metric examines the distribution of the number of connections (degrees) of nodes in the graph. It provides insights into the connectivity patterns within the graph.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled" title="R functions">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+R functions
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-overflow-scroll code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Degree_Distribution <span class="ot">&lt;-</span> <span class="cf">function</span>(data) {</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -3305,9 +3306,25 @@ font-color: green;
 <span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</div>
+</div>
+</div>
 </section>
 <section id="percentage-of-overall-identity-of-the-graph-at-degree-1" class="level2">
 <h2 class="anchored" data-anchor-id="percentage-of-overall-identity-of-the-graph-at-degree-1">Percentage of overall identity of the graph at degree 1</h2>
+<p>This metric calculates the percentage of common edges between two graphs at degree 1. It compares each edge pair in the graphs to identify common edges and calculates the percentage of common edges compared to the total number of edges by taking the graph from each method as reference.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled" title="R functions">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+R functions
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-overflow-scroll code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Global_Identity <span class="ot">&lt;-</span> <span class="cf">function</span>(data1, data2) {</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -3360,9 +3377,9 @@ font-color: green;
 <span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="percentage-of-identity-between-two-graphs-as-a-function-of-node-degree" class="level2">
-<h2 class="anchored" data-anchor-id="percentage-of-identity-between-two-graphs-as-a-function-of-node-degree">Percentage of identity between two graphs as a function of node degree</h2>
+<section id="comparison-of-degree-of-nodes-versus-percentage-identity-on-the-neighborhood-of-these-nodes-at-degree-1" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-of-degree-of-nodes-versus-percentage-identity-on-the-neighborhood-of-these-nodes-at-degree-1">Comparison of degree of nodes versus percentage identity on the neighborhood of these nodes at degree 1</h2>
+<p>This metric examines the relationship between the degree of nodes and the percentage of common neighbors in the graphs. It calculates the percentage of common neighbors for each node in the graph at degree 1 and analyzes how this percentage varies with the degree of the nodes.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-overflow-scroll code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Degree_VS_IdentityPercentage <span class="ot">&lt;-</span> <span class="cf">function</span>(data1, data2){</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -3571,9 +3588,22 @@ font-color: green;
 <span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+</div>
+</div>
+</div>
 </section>
-<section id="display-of-results" class="level1">
-<h1>Display of results</h1>
+<section id="percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n" class="level2">
+<h2 class="anchored" data-anchor-id="percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n">Percentage of overall identity of the graph at degree 2, 3, or even n</h2>
+<p>This metric extends the analysis to higher degrees (beyond degree 1) by calculating the percentage of common paths of length 2, 3, or n between the graphs. It compares paths of increasing length and calculates the percentage of common paths compared to the total number of paths by taking the graph from each method as a reference.</p>
+</section>
+<section id="analysis-of-the-directnesstime-delay-indices-of-the-edges-predicted-by-tdcor-and-common-with-those-predicted-by-diane" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-of-the-directnesstime-delay-indices-of-the-edges-predicted-by-tdcor-and-common-with-those-predicted-by-diane">Analysis of the directness/time delay indices of the edges predicted by TDCor and common with those predicted by DIANE</h2>
+<p>This metric involves analyzing the directness or time delay indices of edges predicted by TDCor and comparing them with edges predicted by DIANE. It examines how consistent the predictions are between the two methods.</p>
+</section>
+<section id="analysis-of-common-clusters" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-of-common-clusters">Analysis of common clusters</h2>
+<p>This metric involves identifying and analyzing clusters of nodes that are common between the graphs. It examines how nodes are grouped together into clusters and identifies clusters that are present in both graphs, providing insights into common structural patterns.</p>
+</section>
 </section>
 
 </main>
