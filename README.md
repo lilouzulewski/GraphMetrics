@@ -8,8 +8,8 @@ The GraphMetrics repository contains R scripts for computing and analyzing vario
 
 1. [**Distribution of Node Degrees**](./metrics_functions/DistributionNodeDegrees.R)
 2. [**Percentage of Overall Identity at Degree 1**](./metrics_functions/PercentageOverallIdentityDegree1.R)
-3. [**Comparison of Node Degrees vs. Percentage Identity**](./metrics_functions/ComparisonNodeDegreesPercentageIdentity.R)
-4. [**Percentage of Overall Identity at Higher Degrees**](./metrics_functions/PercentageOverallIdentityHigherDegrees.R)
+3. [**Node degree as a function of identity percentage in the degree 1 neighborhood**](./metrics_functions/ComparisonNodeDegreesPercentageIdentity.R)
+4. [**Path length as a function of identity percentage**](./metrics_functions/PercentageOverallIdentityHigherDegrees.R)
 5. **Directness/Time Delay Indices Analysis**
 6. **Common Clusters Analysis**
 
@@ -23,7 +23,7 @@ To use the metrics provided in this repository, follow these steps:
 
 ## Results
 
-The initial results obtained using these metrics reveal interesting patterns in the graph structure and provide valuable insights into the relationships between genes. For more detailed analysis and interpretation of the results, refer to the [documentation](https://lilouzulewski.github.io/IRD_internship/) provided in the repository.
+The initial results obtained using these metrics reveal interesting patterns in the graph structure and provide valuable insights into the relationships between genes. For more detailed analysis and interpretation of the results, refer to the [documentation](https://lilouzulewski.github.io/GraphMetrics/) provided in the repository.
 
 For more information and examples, please refer to the documentation and sample dataset included in this repository.
 

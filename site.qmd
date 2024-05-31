@@ -235,7 +235,7 @@ Global_Identity <- function(data1, data2) {
 ```
 
 
-## Comparison of degree of nodes versus percentage identity on the neighborhood of these nodes at degree 1
+## Node degree as a function of identity percentage in the degree 1 neighborhood
 
 This metric examines the relationship between the degree of nodes and the percentage of common neighbors in the graphs. It calculates the percentage of common neighbors for each node in the graph at degree 1 and analyzes how this percentage varies with the degree of the nodes. 
 
@@ -294,37 +294,43 @@ Degree_VS_IdentityPercentage <- function(data1, data2){
                       percentages = c(identity_percentages$ReferenceData1,
                                       identity_percentages$ReferenceData2),
                       reference = c(rep(deparse(substitute(data1)), length(identity_percentages$ReferenceData1)),
-                                    rep(deparse(substitute(data2)), length(identity_percentages$ReferenceData2))))
+                                    rep(deparse(substitute(data2)), length(identity_percentages$ReferenceData2))),
+                      zero_equal = c(identity_percentages$ReferenceData1 == 0 & identity_percentages$ReferenceData2 == 0))
   
-  # modify the values for red points and NA values to 0
+  # Remove rows with "NO NODE" or "/" in percentages
   graph$percentages[graph$percentages %in% c("NO NODE", "/")] <- NA
-  graph$color <- ifelse(is.na(graph$percentages), "Absent degree", as.character(graph$reference))
-  graph$percentages[graph$percentages %in% NA] <- 0
   
-  # create the plot
+  # Remove rows with NA percentages
+  graph <- graph[!is.na(graph$percentages), ]
+  
+  # Assign color based on reference or absence
+  graph$color <- ifelse(graph$percentages == 0 & graph$zero_equal, "Both null values", as.character(graph$reference))
+  
+  # Create the plot
   library(ggplot2)
-  plot <- ggplot(graph, aes(x = degree, y = as.numeric(percentages), fill = reference, color = color)) +
-    # display a scatterplot
+  plot <- ggplot(graph, aes(x = degree, y = as.numeric(percentages), color = color)) +
+    # Display a scatterplot
     geom_point() +
-    # customize legends
+    # Customize legends
     labs(x = "Degree", 
          y = "Identity Percentage", 
-         title = "Degree vs Identity Distributions",
+         title = "Degree of nodes VS Identity percentages",
          color = expression(underline("Reference"))) +
-    # specify legend display
+    # Specify legend display
     guides(fill = "none") +
-    # customize text elements
+    # Customize text elements
     theme(strip.text.x = element_text(size = 8),
           plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
           legend.title = element_text(size = 10))
   
-  # display the plot
+  # Display the plot
   print(plot)
   
   # return the dataframe with the results
   return(identity_percentages)
   
 }
+
 ```
 
 
@@ -462,7 +468,7 @@ Degree_Identity_Comparison <- function(data1, data2, n) {
 }
 ```
 
-## Percentage of overall identity of the graph at degree 2, 3, or even n
+## Path length as a function of identity percentage
 
 This metric extends the analysis to higher degrees (beyond degree 1) by calculating the percentage of common paths of length 2, 3, or n between the graphs. It compares paths of increasing length and calculates the percentage of common paths compared to the total number of paths by taking the graph from each method as a reference.
 
@@ -509,8 +515,8 @@ Global_Identity_Degree <- function(data1, data2, degree) {
   paths_data2 <- c()
   
   # find all simple paths in each graph up to a given degree
-  l_data1 <- unlist(lapply(V(graph_data1) , function(x) all_simple_paths(graph_data1, from=x, cutoff=degree)), recursive = FALSE)
-  l_data2 <- unlist(lapply(V(graph_data2) , function(x) all_simple_paths(graph_data2, from=x, cutoff=degree)), recursive = FALSE)
+  l_data1 <- unlist(lapply(V(graph_data1), function(x) all_simple_paths(graph_data1, from = x, cutoff = degree)), recursive = FALSE)
+  l_data2 <- unlist(lapply(V(graph_data2), function(x) all_simple_paths(graph_data2, from = x, cutoff = degree)), recursive = FALSE)
   
   # filter paths to only include those with the specified degree
   l_data1 <- l_data1[lengths(l_data1) == degree + 1]
@@ -524,21 +530,25 @@ Global_Identity_Degree <- function(data1, data2, degree) {
   paths_data1 <- do.call(rbind, paths_data1)
   paths_data2 <- do.call(rbind, paths_data2)
   
-  # combine paths and create a new column by uniting the paths
-  paths_data1 <- data.frame(c(paths_data1, unite(paths_data1, paths, sep="_")))
-  paths_data2 <- data.frame(c(paths_data2, unite(paths_data2, paths, sep="_")))
+  # convert paths to data frame
+  paths_data1 <- as.data.frame(paths_data1, stringsAsFactors = FALSE)
+  paths_data2 <- as.data.frame(paths_data2, stringsAsFactors = FALSE)
+  
+  # combine paths into a single column by uniting the paths
+  paths_data1$paths <- apply(paths_data1, 1, paste, collapse = "_")
+  paths_data2$paths <- apply(paths_data2, 1, paste, collapse = "_")
   
   # identify different gene pairs in each dataset
-  different_pairs_data1 <- setdiff(paths_data2[,degree+2], paths_data1[,degree+2])
-  different_pairs_data2 <- setdiff(paths_data1[,degree+2], paths_data2[,degree+2])
+  different_pairs_data1 <- setdiff(paths_data2$paths, paths_data1$paths)
+  different_pairs_data2 <- setdiff(paths_data1$paths, paths_data2$paths)
   
   # calculate the number of identical gene pairs in each dataset
-  num_identical_pairs_data1 <- length(paths_data2[,degree+1]) - length(different_pairs_data1)
-  num_identical_pairs_data2 <- length(paths_data1[,degree+1]) - length(different_pairs_data2)
+  num_identical_pairs_data1 <- nrow(paths_data2) - length(different_pairs_data1)
+  num_identical_pairs_data2 <- nrow(paths_data1) - length(different_pairs_data2)
   
   # calculate the percentage of identical gene pairs compared to the total number of unique pairs
-  identity_percentage_ReferenceData1 <- (num_identical_pairs_data1 / length(paths_data1[,degree+1])) * 100
-  identity_percentage_ReferenceData2 <- (num_identical_pairs_data2 / length(paths_data2[,degree+1])) * 100
+  identity_percentage_ReferenceData1 <- (num_identical_pairs_data1 / nrow(paths_data1)) * 100
+  identity_percentage_ReferenceData2 <- (num_identical_pairs_data2 / nrow(paths_data2)) * 100
   
   # construct the final report as a list
   report <- list(
@@ -594,13 +604,14 @@ Degree_Identity_Comparison <- function(data1, data2, n) {
                    percentages = c(graph$identity_percentage_ReferenceData1,
                                    graph$identity_percentage_ReferenceData2),
                    reference = c(rep(deparse(substitute(data1)), length(graph$identity_percentage_ReferenceData1)),
-                                 rep(deparse(substitute(data2)), length(graph$identity_percentage_ReferenceData2))))
+                                 rep(deparse(substitute(data2)), length(graph$identity_percentage_ReferenceData2))),
+                   zero_equal = c(graph$identity_percentage_ReferenceData1 == 0 & graph$identity_percentage_ReferenceData2 == 0))
   
   # create the plot
   library(ggplot2)
   plot <- ggplot(df, aes(x = length, y = as.numeric(percentages), color = reference)) +
     # display a scatterplot
-    geom_point() +
+    geom_point(aes(color = ifelse(zero_equal, "Both null values", reference))) +
     # customize legends
     labs(x = "Length of Paths", 
          y = "Identity Percentage", 
