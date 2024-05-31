@@ -3083,8 +3083,8 @@ vertical-align: -.125em;
   <ul>
   <li><a href="#distribution-of-node-degrees" id="toc-distribution-of-node-degrees" class="nav-link" data-scroll-target="#distribution-of-node-degrees">Distribution of node degrees</a></li>
   <li><a href="#percentage-of-overall-identity-of-the-graph-at-degree-1" id="toc-percentage-of-overall-identity-of-the-graph-at-degree-1" class="nav-link" data-scroll-target="#percentage-of-overall-identity-of-the-graph-at-degree-1">Percentage of overall identity of the graph at degree 1</a></li>
-  <li><a href="#comparison-of-degree-of-nodes-versus-percentage-identity-on-the-neighborhood-of-these-nodes-at-degree-1" id="toc-comparison-of-degree-of-nodes-versus-percentage-identity-on-the-neighborhood-of-these-nodes-at-degree-1" class="nav-link" data-scroll-target="#comparison-of-degree-of-nodes-versus-percentage-identity-on-the-neighborhood-of-these-nodes-at-degree-1">Comparison of degree of nodes versus percentage identity on the neighborhood of these nodes at degree 1</a></li>
-  <li><a href="#percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n" id="toc-percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n" class="nav-link" data-scroll-target="#percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n">Percentage of overall identity of the graph at degree 2, 3, or even n</a></li>
+  <li><a href="#node-degree-as-a-function-of-identity-percentage-in-the-degree-1-neighborhood" id="toc-node-degree-as-a-function-of-identity-percentage-in-the-degree-1-neighborhood" class="nav-link" data-scroll-target="#node-degree-as-a-function-of-identity-percentage-in-the-degree-1-neighborhood">Node degree as a function of identity percentage in the degree 1 neighborhood</a></li>
+  <li><a href="#path-length-as-a-function-of-identity-percentage" id="toc-path-length-as-a-function-of-identity-percentage" class="nav-link" data-scroll-target="#path-length-as-a-function-of-identity-percentage">Path length as a function of identity percentage</a></li>
   <li><a href="#analysis-of-the-directnesstime-delay-indices-of-the-edges-predicted-by-tdcor-and-common-with-those-predicted-by-diane" id="toc-analysis-of-the-directnesstime-delay-indices-of-the-edges-predicted-by-tdcor-and-common-with-those-predicted-by-diane" class="nav-link" data-scroll-target="#analysis-of-the-directnesstime-delay-indices-of-the-edges-predicted-by-tdcor-and-common-with-those-predicted-by-diane">Analysis of the directness/time delay indices of the edges predicted by TDCor and common with those predicted by DIANE</a></li>
   <li><a href="#analysis-of-common-clusters" id="toc-analysis-of-common-clusters" class="nav-link" data-scroll-target="#analysis-of-common-clusters">Analysis of common clusters</a></li>
   </ul></li>
@@ -3325,8 +3325,8 @@ Data format
 </details>
 </div>
 </section>
-<section id="comparison-of-degree-of-nodes-versus-percentage-identity-on-the-neighborhood-of-these-nodes-at-degree-1" class="level2">
-<h2 class="anchored" data-anchor-id="comparison-of-degree-of-nodes-versus-percentage-identity-on-the-neighborhood-of-these-nodes-at-degree-1">Comparison of degree of nodes versus percentage identity on the neighborhood of these nodes at degree 1</h2>
+<section id="node-degree-as-a-function-of-identity-percentage-in-the-degree-1-neighborhood" class="level2">
+<h2 class="anchored" data-anchor-id="node-degree-as-a-function-of-identity-percentage-in-the-degree-1-neighborhood">Node degree as a function of identity percentage in the degree 1 neighborhood</h2>
 <p>This metric examines the relationship between the degree of nodes and the percentage of common neighbors in the graphs. It calculates the percentage of common neighbors for each node in the graph at degree 1 and analyzes how this percentage varies with the degree of the nodes.</p>
 <div class="cell">
 <details class="code-fold">
@@ -3380,37 +3380,42 @@ Data format
 <span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>                      <span class="at">percentages =</span> <span class="fu">c</span>(identity_percentages<span class="sc">$</span>ReferenceData1,</span>
 <span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>                                      identity_percentages<span class="sc">$</span>ReferenceData2),</span>
 <span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>                      <span class="at">reference =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="fu">deparse</span>(<span class="fu">substitute</span>(data1)), <span class="fu">length</span>(identity_percentages<span class="sc">$</span>ReferenceData1)),</span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">rep</span>(<span class="fu">deparse</span>(<span class="fu">substitute</span>(data2)), <span class="fu">length</span>(identity_percentages<span class="sc">$</span>ReferenceData2))))</span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  <span class="co"># modify the values for red points and NA values to 0</span></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  graph<span class="sc">$</span>percentages[graph<span class="sc">$</span>percentages <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;NO NODE&quot;</span>, <span class="st">&quot;/&quot;</span>)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  graph<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(graph<span class="sc">$</span>percentages), <span class="st">&quot;Absent degree&quot;</span>, <span class="fu">as.character</span>(graph<span class="sc">$</span>reference))</span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  graph<span class="sc">$</span>percentages[graph<span class="sc">$</span>percentages <span class="sc">%in%</span> <span class="cn">NA</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create the plot</span></span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggplot2)</span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>  plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(graph, <span class="fu">aes</span>(<span class="at">x =</span> degree, <span class="at">y =</span> <span class="fu">as.numeric</span>(percentages), <span class="at">fill =</span> reference, <span class="at">color =</span> color)) <span class="sc">+</span></span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>    <span class="co"># display a scatterplot</span></span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize legends</span></span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Degree&quot;</span>, </span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">&quot;Identity Percentage&quot;</span>, </span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">&quot;Degree vs Identity Distributions&quot;</span>,</span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>         <span class="at">color =</span> <span class="fu">expression</span>(<span class="fu">underline</span>(<span class="st">&quot;Reference&quot;</span>))) <span class="sc">+</span></span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    <span class="co"># specify legend display</span></span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">+</span></span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize text elements</span></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
-<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
-<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>))</span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>  <span class="co"># display the plot</span></span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(plot)</span>
-<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return the dataframe with the results</span></span>
-<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(identity_percentages)</span>
-<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>                                    <span class="fu">rep</span>(<span class="fu">deparse</span>(<span class="fu">substitute</span>(data2)), <span class="fu">length</span>(identity_percentages<span class="sc">$</span>ReferenceData2))),</span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>                      <span class="at">zero_equal =</span> <span class="fu">c</span>(identity_percentages<span class="sc">$</span>ReferenceData1 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> identity_percentages<span class="sc">$</span>ReferenceData2 <span class="sc">==</span> <span class="dv">0</span>))</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove rows with &quot;NO NODE&quot; or &quot;/&quot; in percentages</span></span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  graph<span class="sc">$</span>percentages[graph<span class="sc">$</span>percentages <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;NO NODE&quot;</span>, <span class="st">&quot;/&quot;</span>)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove rows with NA percentages</span></span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>  graph <span class="ot">&lt;-</span> graph[<span class="sc">!</span><span class="fu">is.na</span>(graph<span class="sc">$</span>percentages), ]</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Assign color based on reference or absence</span></span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>  graph<span class="sc">$</span>color <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(graph<span class="sc">$</span>percentages <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> graph<span class="sc">$</span>zero_equal, <span class="st">&quot;Both null values&quot;</span>, <span class="fu">as.character</span>(graph<span class="sc">$</span>reference))</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create the plot</span></span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggplot2)</span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>  plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(graph, <span class="fu">aes</span>(<span class="at">x =</span> degree, <span class="at">y =</span> <span class="fu">as.numeric</span>(percentages), <span class="at">color =</span> color)) <span class="sc">+</span></span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Display a scatterplot</span></span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Customize legends</span></span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Degree&quot;</span>, </span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">&quot;Identity Percentage&quot;</span>, </span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">&quot;Degree of nodes VS Identity percentages&quot;</span>,</span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>         <span class="at">color =</span> <span class="fu">expression</span>(<span class="fu">underline</span>(<span class="st">&quot;Reference&quot;</span>))) <span class="sc">+</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Specify legend display</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">fill =</span> <span class="st">&quot;none&quot;</span>) <span class="sc">+</span></span>
+<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Customize text elements</span></span>
+<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>))</span>
+<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-79"><a href="#cb6-79" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Display the plot</span></span>
+<span id="cb6-80"><a href="#cb6-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(plot)</span>
+<span id="cb6-81"><a href="#cb6-81" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-82"><a href="#cb6-82" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return the dataframe with the results</span></span>
+<span id="cb6-83"><a href="#cb6-83" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(identity_percentages)</span>
+<span id="cb6-84"><a href="#cb6-84" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-85"><a href="#cb6-85" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell">
@@ -3542,8 +3547,8 @@ Data format
 </details>
 </div>
 </section>
-<section id="percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n" class="level2">
-<h2 class="anchored" data-anchor-id="percentage-of-overall-identity-of-the-graph-at-degree-2-3-or-even-n">Percentage of overall identity of the graph at degree 2, 3, or even n</h2>
+<section id="path-length-as-a-function-of-identity-percentage" class="level2">
+<h2 class="anchored" data-anchor-id="path-length-as-a-function-of-identity-percentage">Path length as a function of identity percentage</h2>
 <p>This metric extends the analysis to higher degrees (beyond degree 1) by calculating the percentage of common paths of length 2, 3, or n between the graphs. It compares paths of increasing length and calculates the percentage of common paths compared to the total number of paths by taking the graph from each method as a reference.</p>
 <div class="cell">
 <details class="code-fold">
@@ -3585,8 +3590,8 @@ Data format
 <span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>  paths_data2 <span class="ot">&lt;-</span> <span class="fu">c</span>()</span>
 <span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># find all simple paths in each graph up to a given degree</span></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  l_data1 <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">V</span>(graph_data1) , <span class="cf">function</span>(x) <span class="fu">all_simple_paths</span>(graph_data1, <span class="at">from=</span>x, <span class="at">cutoff=</span>degree)), <span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  l_data2 <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">V</span>(graph_data2) , <span class="cf">function</span>(x) <span class="fu">all_simple_paths</span>(graph_data2, <span class="at">from=</span>x, <span class="at">cutoff=</span>degree)), <span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  l_data1 <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">V</span>(graph_data1), <span class="cf">function</span>(x) <span class="fu">all_simple_paths</span>(graph_data1, <span class="at">from =</span> x, <span class="at">cutoff =</span> degree)), <span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>  l_data2 <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">V</span>(graph_data2), <span class="cf">function</span>(x) <span class="fu">all_simple_paths</span>(graph_data2, <span class="at">from =</span> x, <span class="at">cutoff =</span> degree)), <span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter paths to only include those with the specified degree</span></span>
 <span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>  l_data1 <span class="ot">&lt;-</span> l_data1[<span class="fu">lengths</span>(l_data1) <span class="sc">==</span> degree <span class="sc">+</span> <span class="dv">1</span>]</span>
@@ -3600,101 +3605,106 @@ Data format
 <span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>  paths_data1 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, paths_data1)</span>
 <span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a>  paths_data2 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, paths_data2)</span>
 <span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine paths and create a new column by uniting the paths</span></span>
-<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>  paths_data1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">c</span>(paths_data1, <span class="fu">unite</span>(paths_data1, paths, <span class="at">sep=</span><span class="st">&quot;_&quot;</span>)))</span>
-<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>  paths_data2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">c</span>(paths_data2, <span class="fu">unite</span>(paths_data2, paths, <span class="at">sep=</span><span class="st">&quot;_&quot;</span>)))</span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert paths to data frame</span></span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>  paths_data1 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(paths_data1, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>  paths_data2 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(paths_data2, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>  <span class="co"># identify different gene pairs in each dataset</span></span>
-<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>  different_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(paths_data2[,degree<span class="sc">+</span><span class="dv">2</span>], paths_data1[,degree<span class="sc">+</span><span class="dv">2</span>])</span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>  different_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(paths_data1[,degree<span class="sc">+</span><span class="dv">2</span>], paths_data2[,degree<span class="sc">+</span><span class="dv">2</span>])</span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>  <span class="co"># combine paths into a single column by uniting the paths</span></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>  paths_data1<span class="sc">$</span>paths <span class="ot">&lt;-</span> <span class="fu">apply</span>(paths_data1, <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">&quot;_&quot;</span>)</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>  paths_data2<span class="sc">$</span>paths <span class="ot">&lt;-</span> <span class="fu">apply</span>(paths_data2, <span class="dv">1</span>, paste, <span class="at">collapse =</span> <span class="st">&quot;_&quot;</span>)</span>
 <span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the number of identical gene pairs in each dataset</span></span>
-<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>  num_identical_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">length</span>(paths_data2[,degree<span class="sc">+</span><span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">length</span>(different_pairs_data1)</span>
-<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>  num_identical_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">length</span>(paths_data1[,degree<span class="sc">+</span><span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">length</span>(different_pairs_data2)</span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>  <span class="co"># identify different gene pairs in each dataset</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>  different_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(paths_data2<span class="sc">$</span>paths, paths_data1<span class="sc">$</span>paths)</span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a>  different_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(paths_data1<span class="sc">$</span>paths, paths_data2<span class="sc">$</span>paths)</span>
 <span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the percentage of identical gene pairs compared to the total number of unique pairs</span></span>
-<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>  identity_percentage_ReferenceData1 <span class="ot">&lt;-</span> (num_identical_pairs_data1 <span class="sc">/</span> <span class="fu">length</span>(paths_data1[,degree<span class="sc">+</span><span class="dv">1</span>])) <span class="sc">*</span> <span class="dv">100</span></span>
-<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>  identity_percentage_ReferenceData2 <span class="ot">&lt;-</span> (num_identical_pairs_data2 <span class="sc">/</span> <span class="fu">length</span>(paths_data2[,degree<span class="sc">+</span><span class="dv">1</span>])) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the number of identical gene pairs in each dataset</span></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>  num_identical_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">nrow</span>(paths_data2) <span class="sc">-</span> <span class="fu">length</span>(different_pairs_data1)</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>  num_identical_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">nrow</span>(paths_data1) <span class="sc">-</span> <span class="fu">length</span>(different_pairs_data2)</span>
 <span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>  <span class="co"># construct the final report as a list</span></span>
-<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>  report <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>    <span class="at">identity_percentage_ReferenceData1 =</span> identity_percentage_ReferenceData1,</span>
-<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">identity_percentage_ReferenceData2 =</span> identity_percentage_ReferenceData2</span>
-<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return the results</span></span>
-<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(report)</span>
-<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a><span class="co"># DEGREE IDENTITY COMPARISON</span></span>
-<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a><span class="co"># function to compare identity percentages at different degrees</span></span>
-<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a>Degree_Identity_Comparison <span class="ot">&lt;-</span> <span class="cf">function</span>(data1, data2, n) {</span>
-<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert dataframes to graphs</span></span>
-<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>  graph_data1 <span class="ot">&lt;-</span> <span class="fu">Dataframe_To_Graph</span>(data1)</span>
-<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>  graph_data2 <span class="ot">&lt;-</span> <span class="fu">Dataframe_To_Graph</span>(data2)</span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the percentage of identical gene pairs compared to the total number of unique pairs</span></span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>  identity_percentage_ReferenceData1 <span class="ot">&lt;-</span> (num_identical_pairs_data1 <span class="sc">/</span> <span class="fu">nrow</span>(paths_data1)) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>  identity_percentage_ReferenceData2 <span class="ot">&lt;-</span> (num_identical_pairs_data2 <span class="sc">/</span> <span class="fu">nrow</span>(paths_data2)) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>  <span class="co"># construct the final report as a list</span></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a>  report <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">identity_percentage_ReferenceData1 =</span> identity_percentage_ReferenceData1,</span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">identity_percentage_ReferenceData2 =</span> identity_percentage_ReferenceData2</span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return the results</span></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(report)</span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a><span class="co"># DEGREE IDENTITY COMPARISON</span></span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a><span class="co"># function to compare identity percentages at different degrees</span></span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>Degree_Identity_Comparison <span class="ot">&lt;-</span> <span class="cf">function</span>(data1, data2, n) {</span>
 <span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>  <span class="co"># find all simple paths in each graph up to the specified degree</span></span>
-<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>  l_data1 <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">V</span>(graph_data1) , <span class="cf">function</span>(x) <span class="fu">all_simple_paths</span>(graph_data1, <span class="at">from=</span>x, <span class="at">cutoff=</span>n)), <span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>  l_data2 <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">V</span>(graph_data2) , <span class="cf">function</span>(x) <span class="fu">all_simple_paths</span>(graph_data2, <span class="at">from=</span>x, <span class="at">cutoff=</span>n)), <span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>  <span class="co"># convert dataframes to graphs</span></span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a>  graph_data1 <span class="ot">&lt;-</span> <span class="fu">Dataframe_To_Graph</span>(data1)</span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>  graph_data2 <span class="ot">&lt;-</span> <span class="fu">Dataframe_To_Graph</span>(data2)</span>
 <span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the length of each path</span></span>
-<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>  lengths_paths_data1 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(l_data1, length)</span>
-<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>  lengths_paths_data2 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(l_data2, length)</span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a>  <span class="co"># find all simple paths in each graph up to the specified degree</span></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a>  l_data1 <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">V</span>(graph_data1) , <span class="cf">function</span>(x) <span class="fu">all_simple_paths</span>(graph_data1, <span class="at">from=</span>x, <span class="at">cutoff=</span>n)), <span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>  l_data2 <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">lapply</span>(<span class="fu">V</span>(graph_data2) , <span class="cf">function</span>(x) <span class="fu">all_simple_paths</span>(graph_data2, <span class="at">from=</span>x, <span class="at">cutoff=</span>n)), <span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>  <span class="co"># find the maximum path length</span></span>
-<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>  longueur_max_data1 <span class="ot">&lt;-</span> <span class="fu">max</span>(lengths_paths_data1)</span>
-<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>  longueur_max_data2 <span class="ot">&lt;-</span> <span class="fu">max</span>(lengths_paths_data2)</span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the length of each path</span></span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>  lengths_paths_data1 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(l_data1, length)</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>  lengths_paths_data2 <span class="ot">&lt;-</span> <span class="fu">sapply</span>(l_data2, length)</span>
 <span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>  <span class="co"># determine the maximum degree to consider</span></span>
-<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">min</span>(longueur_max_data1, longueur_max_data2) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initialize dataframe to store identity percentages</span></span>
-<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>  graph <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">identity_percentage_ReferenceData1 =</span> <span class="fu">numeric</span>(n),</span>
-<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a>                      <span class="at">identity_percentage_ReferenceData2 =</span> <span class="fu">numeric</span>(n))</span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>  <span class="co"># find the maximum path length</span></span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>  longueur_max_data1 <span class="ot">&lt;-</span> <span class="fu">max</span>(lengths_paths_data1)</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>  longueur_max_data2 <span class="ot">&lt;-</span> <span class="fu">max</span>(lengths_paths_data2)</span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>  <span class="co"># determine the maximum degree to consider</span></span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">min</span>(longueur_max_data1, longueur_max_data2) <span class="sc">-</span> <span class="dv">1</span></span>
 <span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>  <span class="co"># loop over degrees and calculate identity percentages</span></span>
-<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
-<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>    <span class="co"># calculate identity percentages only if they are not equal to 0</span></span>
-<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">Global_Identity_Degree</span>(data1,data2,i)<span class="sc">$</span>identity_percentage_ReferenceData1 <span class="sc">!=</span> <span class="dv">0</span> <span class="sc">||</span></span>
-<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>        <span class="fu">Global_Identity_Degree</span>(data1,data2,i)<span class="sc">$</span>identity_percentage_ReferenceData2 <span class="sc">!=</span> <span class="dv">0</span>) {</span>
-<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>      graph<span class="sc">$</span>identity_percentage_ReferenceData1[i] <span class="ot">&lt;-</span> <span class="fu">Global_Identity_Degree</span>(data1,data2,i)<span class="sc">$</span>identity_percentage_ReferenceData1</span>
-<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a>      graph<span class="sc">$</span>identity_percentage_ReferenceData2[i] <span class="ot">&lt;-</span> <span class="fu">Global_Identity_Degree</span>(data1,data2,i)<span class="sc">$</span>identity_percentage_ReferenceData2</span>
-<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create a dataframe for the graph</span></span>
-<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">length =</span> <span class="fu">seq</span>(<span class="dv">1</span>,n),</span>
-<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>                   <span class="at">percentages =</span> <span class="fu">c</span>(graph<span class="sc">$</span>identity_percentage_ReferenceData1,</span>
-<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a>                                   graph<span class="sc">$</span>identity_percentage_ReferenceData2),</span>
-<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>                   <span class="at">reference =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="fu">deparse</span>(<span class="fu">substitute</span>(data1)), <span class="fu">length</span>(graph<span class="sc">$</span>identity_percentage_ReferenceData1)),</span>
-<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">rep</span>(<span class="fu">deparse</span>(<span class="fu">substitute</span>(data2)), <span class="fu">length</span>(graph<span class="sc">$</span>identity_percentage_ReferenceData2))))</span>
-<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create the plot</span></span>
-<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggplot2)</span>
-<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a>  plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> <span class="fu">as.numeric</span>(percentages), <span class="at">color =</span> reference)) <span class="sc">+</span></span>
-<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a>    <span class="co"># display a scatterplot</span></span>
-<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span></span>
-<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize legends</span></span>
-<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Length of Paths&quot;</span>, </span>
-<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">&quot;Identity Percentage&quot;</span>, </span>
-<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">&quot;Length of Paths vs Identity Percentages&quot;</span>,</span>
-<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a>         <span class="at">color =</span> <span class="fu">expression</span>(<span class="fu">underline</span>(<span class="st">&quot;Reference&quot;</span>))) <span class="sc">+</span></span>
-<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize scales</span></span>
-<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1</span>, n, <span class="at">by =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
-<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize text elements</span></span>
-<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
-<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
-<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>))</span>
-<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print the plot</span></span>
-<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(plot)</span>
-<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return the dataframe with the results</span></span>
-<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(graph)</span>
-<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>  <span class="co"># initialize dataframe to store identity percentages</span></span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a>  graph <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">identity_percentage_ReferenceData1 =</span> <span class="fu">numeric</span>(n),</span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>                      <span class="at">identity_percentage_ReferenceData2 =</span> <span class="fu">numeric</span>(n))</span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>  <span class="co"># loop over degrees and calculate identity percentages</span></span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a>    <span class="co"># calculate identity percentages only if they are not equal to 0</span></span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">Global_Identity_Degree</span>(data1,data2,i)<span class="sc">$</span>identity_percentage_ReferenceData1 <span class="sc">!=</span> <span class="dv">0</span> <span class="sc">||</span></span>
+<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a>        <span class="fu">Global_Identity_Degree</span>(data1,data2,i)<span class="sc">$</span>identity_percentage_ReferenceData2 <span class="sc">!=</span> <span class="dv">0</span>) {</span>
+<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a>      graph<span class="sc">$</span>identity_percentage_ReferenceData1[i] <span class="ot">&lt;-</span> <span class="fu">Global_Identity_Degree</span>(data1,data2,i)<span class="sc">$</span>identity_percentage_ReferenceData1</span>
+<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a>      graph<span class="sc">$</span>identity_percentage_ReferenceData2[i] <span class="ot">&lt;-</span> <span class="fu">Global_Identity_Degree</span>(data1,data2,i)<span class="sc">$</span>identity_percentage_ReferenceData2</span>
+<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create a dataframe for the graph</span></span>
+<span id="cb9-123"><a href="#cb9-123" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">length =</span> <span class="fu">seq</span>(<span class="dv">1</span>,n),</span>
+<span id="cb9-124"><a href="#cb9-124" aria-hidden="true" tabindex="-1"></a>                   <span class="at">percentages =</span> <span class="fu">c</span>(graph<span class="sc">$</span>identity_percentage_ReferenceData1,</span>
+<span id="cb9-125"><a href="#cb9-125" aria-hidden="true" tabindex="-1"></a>                                   graph<span class="sc">$</span>identity_percentage_ReferenceData2),</span>
+<span id="cb9-126"><a href="#cb9-126" aria-hidden="true" tabindex="-1"></a>                   <span class="at">reference =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="fu">deparse</span>(<span class="fu">substitute</span>(data1)), <span class="fu">length</span>(graph<span class="sc">$</span>identity_percentage_ReferenceData1)),</span>
+<span id="cb9-127"><a href="#cb9-127" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">rep</span>(<span class="fu">deparse</span>(<span class="fu">substitute</span>(data2)), <span class="fu">length</span>(graph<span class="sc">$</span>identity_percentage_ReferenceData2))),</span>
+<span id="cb9-128"><a href="#cb9-128" aria-hidden="true" tabindex="-1"></a>                   <span class="at">zero_equal =</span> <span class="fu">c</span>(graph<span class="sc">$</span>identity_percentage_ReferenceData1 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> graph<span class="sc">$</span>identity_percentage_ReferenceData2 <span class="sc">==</span> <span class="dv">0</span>))</span>
+<span id="cb9-129"><a href="#cb9-129" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-130"><a href="#cb9-130" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create the plot</span></span>
+<span id="cb9-131"><a href="#cb9-131" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggplot2)</span>
+<span id="cb9-132"><a href="#cb9-132" aria-hidden="true" tabindex="-1"></a>  plot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> length, <span class="at">y =</span> <span class="fu">as.numeric</span>(percentages), <span class="at">color =</span> reference)) <span class="sc">+</span></span>
+<span id="cb9-133"><a href="#cb9-133" aria-hidden="true" tabindex="-1"></a>    <span class="co"># display a scatterplot</span></span>
+<span id="cb9-134"><a href="#cb9-134" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">ifelse</span>(zero_equal, <span class="st">&quot;Both null values&quot;</span>, reference))) <span class="sc">+</span></span>
+<span id="cb9-135"><a href="#cb9-135" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize legends</span></span>
+<span id="cb9-136"><a href="#cb9-136" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Length of Paths&quot;</span>, </span>
+<span id="cb9-137"><a href="#cb9-137" aria-hidden="true" tabindex="-1"></a>         <span class="at">y =</span> <span class="st">&quot;Identity Percentage&quot;</span>, </span>
+<span id="cb9-138"><a href="#cb9-138" aria-hidden="true" tabindex="-1"></a>         <span class="at">title =</span> <span class="st">&quot;Length of Paths vs Identity Percentages&quot;</span>,</span>
+<span id="cb9-139"><a href="#cb9-139" aria-hidden="true" tabindex="-1"></a>         <span class="at">color =</span> <span class="fu">expression</span>(<span class="fu">underline</span>(<span class="st">&quot;Reference&quot;</span>))) <span class="sc">+</span></span>
+<span id="cb9-140"><a href="#cb9-140" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize scales</span></span>
+<span id="cb9-141"><a href="#cb9-141" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">breaks=</span><span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">1</span>, n, <span class="at">by =</span> <span class="dv">1</span>))) <span class="sc">+</span></span>
+<span id="cb9-142"><a href="#cb9-142" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize text elements</span></span>
+<span id="cb9-143"><a href="#cb9-143" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb9-144"><a href="#cb9-144" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb9-145"><a href="#cb9-145" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">10</span>))</span>
+<span id="cb9-146"><a href="#cb9-146" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-147"><a href="#cb9-147" aria-hidden="true" tabindex="-1"></a>  <span class="co"># print the plot</span></span>
+<span id="cb9-148"><a href="#cb9-148" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(plot)</span>
+<span id="cb9-149"><a href="#cb9-149" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-150"><a href="#cb9-150" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return the dataframe with the results</span></span>
+<span id="cb9-151"><a href="#cb9-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(graph)</span>
+<span id="cb9-152"><a href="#cb9-152" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
