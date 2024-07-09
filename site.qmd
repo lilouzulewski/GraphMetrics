@@ -1,5 +1,5 @@
 ---
-title: "Comparison of networks inferred by DIANE and TDCor"
+title: "Networks Comparison Tools"
 format:
   html:
     page-layout: full
@@ -7,24 +7,35 @@ format:
     code-block-border-left: "#696969"
 ---
 
-This document presents the comparative network tools inferred by DIANE and TDCor and their use, offering detailed explanations on the interpretation of the results provided by the functions implemented in R. The results encompass several metrics allowing an in-depth evaluation of the performance of the two methods. This is a first step to enlighten users on the respective strengths and limitations of the two methods.
+This website features network comparison tools applicable to various types of networks. The comparison tools are functions implemented in R. Initially, you will find the source codes and explanations of how these tools are constructed. Subsequently, a detailed example on gene regulatory networks, which are systems of genes interacting to control gene expression levels, is provided. This example illustrates the application of the comparison tools and offers insights into their practical use.
 
-# Prerequisites
+# Source Code
 
-To implement the following [metrics](#metrics), certain R functions are required to format the databases you intend to use. 
+In this section, you will find the source code for network comparison tools implemented in R that are mainly topological metrics. A step-by-step explanation of each function is available, detailing their construction and functionality. By understanding the underlying code, users can gain a complete overview of how these tools work, enabling them to apply them effectively to different types of networks. This detailed breakdown will also serve as the basis for the following example on gene regulation networks, demonstrating the practical application of these tools.
 
-::: {.callout-important collapse="true" title="Data format"}
-To apply all the following functions to your dataset, it should contain two columns named `from` and `to`, representing the genes connected in the graph without any specific orientation.
+## Prerequisites
+
+To implement the following [metrics](#metrics), certain R functions are required to format the databases you intend to use.
+
+::: {.callout-important title="Data format"}
+To apply all the following functions to your dataset, it must contain two columns named `from` and `to`, representing pairs of nodes connected in the graph without any specific orientation.
 :::
 
-First, the `Sort_Columns()` function is designed to sort the gene pairs in a dataset and ensure that gene pairs are consistently represented regardless of the order in which they were initially recorded. It creates a new dataframe where each row represents a gene pair. For each gene pair, it sorts the genes alphabetically by comparing the values in the from and to columns. This ensures consistency regardless of the original order of genes in the pair. Then, it removes any duplicate rows to ensure each gene pair is unique and returns the sorted dataframe.
+Firstly, the Sort_Columns() function is designed to standardize the representation of node pairs in a dataset by ensuring they are consistently ordered, irrespective of their original sequence. This function generates a new data frame where each row represents a pair of connected nodes in the network. For each pair, the function sorts the nodes alphabetically or numerically by comparing the values in the 'from' and 'to' columns. This guarantees a uniform representation of node pairs. Additionally, it eliminates duplicate rows to ensure that each pair is unique, and finally returns the sorted data frame.
 
+::: {.callout-tip icon=false title="`Sort_Columns()`"}
 ```{r}
 #| output: true
 #| code-fold: true
-#| code-summary: "Click for more function details."
+#| code-summary: "Click for more code details."
 #| code-overflow: scroll
 #| highlight-style: github
+
+# Sort_Columns() function sorts the pairs of nodes in a dataframe and removes duplicate pairs.
+# Parameters:
+#   - data: Input dataframe containing gene pairs with columns 'from' and 'to'.
+# Returns:
+#   - A dataframe with sorted and unique gene pairs.
 
 Sort_Columns <- function(data) {
   
@@ -39,14 +50,22 @@ Sort_Columns <- function(data) {
   
 }
 ```
+:::
 
-Then, the function `Dataframe_To_Graph()` converts a dataframe containing gene pairs into a graph object. After sorting the gene pairs in the input dataframe to ensure consistency in representation, it concatenates the `from` and `to` columns into a new dataframe called `gene_pairs` and removes any duplicate rows. Then, it creates a graph object from the unique gene pairs dataframe using the `graph_from_data_frame()` function and it returns the constructed graph object.
+Next, the `Dataframe_To_Graph()` function converts a dataframe of node pairs into a graph object. First, it sorts the pairs in the input dataframe to ensure consistent representation, then concatenates the `from` and `to` columns into a new dataframe named even, removing any duplicate rows. Finally, it creates a graph object from this dataframe of unique pairs using the `graph_from_data_frame()` function and returns the constructed graph object.
 
+::: {.callout-tip icon=false title="`Dataframe_To_Graph()`"}
 ```{r}
 #| output: true
 #| code-fold: true
-#| code-summary: "Click for more function details."
+#| code-summary: "Click for more code details."
 #| code-overflow: scroll
+
+# Dataframe_To_Graph() function converts a dataframe of node pairs into a graph object.
+# Parameters:
+#   - data: Input dataframe containing node pairs with columns 'from' and 'to'.
+# Returns:
+#   - An igraph graph object representing the network of node pairs.
 
 Dataframe_To_Graph <- function(data){
 
@@ -54,10 +73,10 @@ Dataframe_To_Graph <- function(data){
   data <- Sort_Columns(data)
   
   # concatenate gene pairs into a new dataframe for each dataset
-  gene_pairs <- cbind(from = data$from, to = data$to, pairs = paste(data$from, data$to, sep = "_"))
+  pairs <- cbind(from = data$from, to = data$to, pairs = paste(data$from, data$to, sep = "_"))
   
-  # remove duplicates in gene pairs
-  unique_pairs <- unique(gene_pairs)
+  # remove duplicates in pairs
+  unique_pairs <- unique(pairs)
   
   # load required libraries
   library(tidyr)
@@ -71,61 +90,84 @@ Dataframe_To_Graph <- function(data){
 
 }
 ```
+:::
 
+Now that your database is in the correct format, you can apply the [metrics](#metrics) below.
 
-# Graph Metrics {#metrics}
+## Graph Metrics {#metrics}
 
-Here are the selected metrics that collectively offer a comprehensive understanding of the similarities and differences between two graphs, enabling a detailed analysis of their structural and functional properties. All these metrics can be implemented and used with R.
+The following metrics have been developed to offer a comprehensive understanding of the similarities and differences between two graphs. These metrics facilitate a detailed analysis of both the structural and functional properties of the graphs.
 
-## Distribution of node degrees
+### Nodes degree distributions
 
-**This metric examines the distribution of the number of connections of nodes in the graph. It provides insights into the connectivity patterns within the graph.**
+This measure examines the distribution of the number of connections (degrees) of nodes in the graph, providing insight into the connectivity patterns in the graph. The degree distribution of nodes is an essential measure for understanding connectivity in gene regulatory networks. This distribution indicates the number of connections that each node has with other nodes in the network. For example, an asymmetric distribution could indicate the presence of a few highly connected nodes (hubs), which are typical of biological networks. Analysis of this distribution allows you to assess the centrality and relative importance of genes within the network.
 
-The first function, `Degree_Distribution()`, calculates the degree distribution of nodes in a graph from the provided data. It takes gene interaction data as input, removes duplicates in gene pairs, and concatenates pairs into a new dataframe. It then iterates over each unique gene to count the number of other genes associated with each gene, creating a dataframe with the results where each row represents a gene and its degree of connectivity in the graph.
+![**Figure 1. Schematic example of nodes degree distribution in two networks.** This figure shows two networks characterised by different node degree distributions. Specifically, one network contains two nodes with degree 2 and two nodes with degree 1, while the other network contains one node with degree 3 and three nodes with degree 1. Although the nodes in both examples are identical, the connections they form are very different. For example, node A may be relatively isolated in one network, but may play a central role in the other.](./images/NodesDistribution.png)
 
+The `Degree_Distribution()` function computes the degree distribution of nodes in a network represented by an input dataframe. It starts by sorting and removing duplicates from pairs of nodes, then collects all the unique nodes present in these pairs. It then traverses these unique nodes to count the number of links associated with each through the columns of the dataframe. The results are then structured into a new dataframe that lists each node with its corresponding degree. Finally, the function ensures that any duplicate entries are removed to ensure that each node is only represented once in the final result.
+
+::: {.callout-tip icon=false title="`Degree_Distribution()`"}
 ```{r}
 #| output: true
 #| code-fold: true
-#| code-summary: "Click for more function details."
+#| code-summary: "Click for more code details."
 #| code-overflow: scroll
+#| highlight-style: github
+
+# Degree_Distribution() function calculates the degree distribution of nodes in a network.
+# Parameters:
+#   - data: Input dataframe containing node pairs.
+# Returns:
+#   - A dataframe with unique nodes and their corresponding degrees.
 
 Degree_Distribution <- function(data) {
   
-  # concatenate gene pairs into a new dataframe and remove duplicates in gene pairs
+  # concatenate pairs into a new dataframe and remove duplicates in node pairs
   unique_pairs <- Sort_Columns(data)
   
   # initialize a vector to store counts
-  all_genes <- c(unique_pairs[,1], unique_pairs[,2])
-  unique_genes <- unique(all_genes)
-  counts <- numeric(length(unique_genes))
+  all_nodes <- c(unique_pairs[,1], unique_pairs[,2])
+  unique_nodes <- unique(all_nodes)
+  counts <- numeric(length(unique_nodes))
   
-  # loop through genes
-  for (i in seq_along(unique_genes)) {
-    gene <- unique_genes[i]
+  # loop through nodes
+  for (i in seq_along(unique_nodes)) {
+    node <- unique_nodes[i]
     # count the number of associated genes in both columns
-    count <- sum(unique_pairs[,1]==gene) + sum(unique_pairs[,2]==gene)
+    count <- sum(unique_pairs[,1]==node) + sum(unique_pairs[,2]==node)
     counts[i] <- count
   }
   
   # create a dataframe with the results
-  result <- data.frame(gene=unique_genes, degree=counts)
+  result <- data.frame(node=unique_nodes, degree=counts)
   
   # remove duplicates
-  result <- result[!duplicated(result$gene), ]
+  result <- result[!duplicated(result$node), ]
   
   # return the results
   return(result)
   
 }
 ```
+:::
 
-The second function, `Degree_Distribution_Comparison()`, compares the degree distribution between two sets of data. It takes two sets of gene interaction data as input, utilizes the previous `Degree_Distribution()` function to calculate the degree distribution for each dataset, combines the results into a single dataframe for easy comparison, and creates a comparison histogram of degree distributions between the two datasets using `ggplot2`.
+The `Degree_Distribution_Comparison()` function makes it easy to compare the degree distributions of nodes between two datasets representing different networks. It starts by loading the `ggplot2` graphing library. It then calculates the degree distributions for each dataset using the `Degree_Distribution()` function and combines these results into a df dataframe. This dataframe is structured to contain information about each unique node and its degree, as well as an indication of which dataset it belongs to (`data1` or `data2`). Using `ggplot2`, the function generates a bar chart showing the degree distributions of the two networks. Each bar is coloured according to the corresponding dataset, allowing an immediate visual comparison of the network structures in terms of the distribution of node connections. This graphical approach helps to quickly identify similarities and differences in the degree distributions between the two networks being analysed.
 
+::: {.callout-tip icon=false title="`Degree_Distribution_Comparison()`"}
 ```{r}
 #| output: true
 #| code-fold: true
-#| code-summary: "Click for more function details."
+#| code-summary: "Click for more code details."
 #| code-overflow: scroll
+#| highlight-style: github
+
+# Degree_Distribution_Comparison() function compares the degree distributions of nodes in two networks and visualizes them using a bar plot.
+# Parameters:
+#   - data1: Input dataframe containing node pairs for the first network.
+#   - data2: Input dataframe containing node pairs for the second network.
+# Returns:
+#   - A ggplot object visualizing the comparison of degree distributions between the two networks.
+
 
 Degree_Distribution_Comparison <- function(data1, data2){
   
@@ -158,29 +200,25 @@ Degree_Distribution_Comparison <- function(data1, data2){
   
 }
 ```
-
-These functions provide visual analyses of the degree distribution of nodes in different genetic networks, helping to identify similarities and differences between the datasets studied.
-
+:::
 
 
 
+### Degree 1 global identity
 
+Degree 1 global identity examines the proportion of nodes sharing identical connectivity to identify similarities between two networks. This metric calculates the percentage of shared edges between two graphs by comparing each pair of nodes to identify those that are shared, thereby assessing the similarity of the relationships between the nodes in the networks under study.
 
+![**Figure 2. Schematic example of the percentage of identity between two networks.** Using this Figure as an example, note that this metric is simply the ratio of the number of similar edges to the total number of edges in the networks. In this schema, the percentage of identity would be 33.3%.](./images/NodesDistribution.png)
 
+However, a problem arises when the two networks to be compared do not have the same number of edges. To overcome this problem, two different identity percentages need to be considered, each using one of the networks as a reference. The number of edges in network $r$ will be used to calculate the reference identity percentage $p_r$.
 
-
-
-## Percentage of overall identity of the graph at degree 1
-
-**This metric calculates the percentage of common edges between two graphs at degree 1. It compares each edge pair in the graphs to identify common edges and calculates the percentage of common edges compared to the total number of edges by taking the graph from each method as reference.**
-
-
-
+::: {.callout-tip icon=false title="`Global_Identity()`"}
 ```{r}
 #| output: true
 #| code-fold: true
-#| code-summary: "Click for more function details."
+#| code-summary: "Click for more code details."
 #| code-overflow: scroll
+#| highlight-style: github
 
 Global_Identity <- function(data1, data2) {
   
@@ -233,17 +271,19 @@ Global_Identity <- function(data1, data2) {
   
 }
 ```
+:::
 
 
-## Node degree as a function of identity percentage in the degree 1 neighborhood
+### Comparison of degree of nodes versus percentage identity on the neighborhood of these nodes at degree 1
 
 This metric examines the relationship between the degree of nodes and the percentage of common neighbors in the graphs. It calculates the percentage of common neighbors for each node in the graph at degree 1 and analyzes how this percentage varies with the degree of the nodes. 
 
 ```{r}
 #| output: true
 #| code-fold: true
-#| code-summary: "Click for more function details."
+#| code-summary: "Click for more code details."
 #| code-overflow: scroll
+#| highlight-style: github
 
 Degree_VS_IdentityPercentage <- function(data1, data2){
   
@@ -294,52 +334,43 @@ Degree_VS_IdentityPercentage <- function(data1, data2){
                       percentages = c(identity_percentages$ReferenceData1,
                                       identity_percentages$ReferenceData2),
                       reference = c(rep(deparse(substitute(data1)), length(identity_percentages$ReferenceData1)),
-                                    rep(deparse(substitute(data2)), length(identity_percentages$ReferenceData2))),
-                      zero_equal = c(identity_percentages$ReferenceData1 == 0 & identity_percentages$ReferenceData2 == 0))
+                                    rep(deparse(substitute(data2)), length(identity_percentages$ReferenceData2))))
   
-  # Remove rows with "NO NODE" or "/" in percentages
+  # modify the values for red points and NA values to 0
   graph$percentages[graph$percentages %in% c("NO NODE", "/")] <- NA
+  graph$color <- ifelse(is.na(graph$percentages), "Absent degree", as.character(graph$reference))
+  graph$percentages[graph$percentages %in% NA] <- 0
   
-  # Remove rows with NA percentages
-  graph <- graph[!is.na(graph$percentages), ]
-  
-  # Assign color based on reference or absence
-  graph$color <- ifelse(graph$percentages == 0 & graph$zero_equal, "Both null values", as.character(graph$reference))
-  
-  # Create the plot
+  # create the plot
   library(ggplot2)
-  plot <- ggplot(graph, aes(x = degree, y = as.numeric(percentages), color = color)) +
-    # Display a scatterplot
+  plot <- ggplot(graph, aes(x = degree, y = as.numeric(percentages), fill = reference, color = color)) +
+    # display a scatterplot
     geom_point() +
-    # Customize legends
+    # customize legends
     labs(x = "Degree", 
          y = "Identity Percentage", 
-         title = "Degree of nodes VS Identity percentages",
+         title = "Degree vs Identity Distributions",
          color = expression(underline("Reference"))) +
-    # Specify legend display
+    # specify legend display
     guides(fill = "none") +
-    # Customize text elements
+    # customize text elements
     theme(strip.text.x = element_text(size = 8),
           plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
           legend.title = element_text(size = 10))
   
-  # Display the plot
+  # display the plot
   print(plot)
   
   # return the dataframe with the results
   return(identity_percentages)
   
 }
-
 ```
 
+## 
 
 ```{r}
-#| output: true
-#| code-fold: true
-#| code-summary: "Click for more function details."
 #| code-overflow: scroll
-
 Global_Identity_Degree <- function(data1, data2, degree) {
   
   # convert dataframes to graphs
@@ -392,14 +423,10 @@ Global_Identity_Degree <- function(data1, data2, degree) {
   return(report)
 
 }
-```
+````
 
 ```{r}
-#| output: true
-#| code-fold: true
-#| code-summary: "Click for more function details."
 #| code-overflow: scroll
-
 Degree_Identity_Comparison <- function(data1, data2, n) {
   
   # convert dataframes to graphs
@@ -467,182 +494,26 @@ Degree_Identity_Comparison <- function(data1, data2, n) {
 
 }
 ```
+:::
 
-## Path length as a function of identity percentage
+
+
+### Percentage of overall identity of the graph at degree 2, 3, or even n
 
 This metric extends the analysis to higher degrees (beyond degree 1) by calculating the percentage of common paths of length 2, 3, or n between the graphs. It compares paths of increasing length and calculates the percentage of common paths compared to the total number of paths by taking the graph from each method as a reference.
 
-```{r}
-#| output: true
-#| code-fold: true
-#| code-summary: "Click for more function details."
-#| code-overflow: scroll
-
-# function to convert a dataframe to a graph
-Dataframe_To_Graph <- function(data){
-  # sort gene pairs in both datasets
-  data <- Sort_Columns(data)
-  
-  # concatenate gene pairs into a new dataframe for each dataset
-  gene_pairs <- cbind(from = data$from, to = data$to, pairs = paste(data$from, data$to, sep = "_"))
-  
-  # remove duplicates in gene pairs
-  unique_pairs <- unique(gene_pairs)
-  
-  # load required libraries
-  library(tidyr)
-  library(igraph)
-  
-  # create graph object from dataframe
-  graph <- graph_from_data_frame(unique_pairs, directed=FALSE)
-  
-  # return the dataframe with the results
-  return(graph)
-}
 
 
-# GLOBAL IDENTITY PERCENTAGE OF A GRAPH AT DEGREE n
-
-# function to calculate global identity percentage of a graph at a given degree
-Global_Identity_Degree <- function(data1, data2, degree) {
-  
-  # convert dataframes to graphs
-  graph_data1 <- Dataframe_To_Graph(data1)
-  graph_data2 <- Dataframe_To_Graph(data2)
-  
-  # initialize variables to store paths
-  paths_data1 <- c()
-  paths_data2 <- c()
-  
-  # find all simple paths in each graph up to a given degree
-  l_data1 <- unlist(lapply(V(graph_data1), function(x) all_simple_paths(graph_data1, from = x, cutoff = degree)), recursive = FALSE)
-  l_data2 <- unlist(lapply(V(graph_data2), function(x) all_simple_paths(graph_data2, from = x, cutoff = degree)), recursive = FALSE)
-  
-  # filter paths to only include those with the specified degree
-  l_data1 <- l_data1[lengths(l_data1) == degree + 1]
-  l_data2 <- l_data2[lengths(l_data2) == degree + 1]
-  
-  # convert paths to character IDs
-  paths_data1 <- lapply(1:length(l_data1), function(x) as_ids(l_data1[[x]]))
-  paths_data2 <- lapply(1:length(l_data2), function(x) as_ids(l_data2[[x]]))
-  
-  # combine paths into dataframes
-  paths_data1 <- do.call(rbind, paths_data1)
-  paths_data2 <- do.call(rbind, paths_data2)
-  
-  # convert paths to data frame
-  paths_data1 <- as.data.frame(paths_data1, stringsAsFactors = FALSE)
-  paths_data2 <- as.data.frame(paths_data2, stringsAsFactors = FALSE)
-  
-  # combine paths into a single column by uniting the paths
-  paths_data1$paths <- apply(paths_data1, 1, paste, collapse = "_")
-  paths_data2$paths <- apply(paths_data2, 1, paste, collapse = "_")
-  
-  # identify different gene pairs in each dataset
-  different_pairs_data1 <- setdiff(paths_data2$paths, paths_data1$paths)
-  different_pairs_data2 <- setdiff(paths_data1$paths, paths_data2$paths)
-  
-  # calculate the number of identical gene pairs in each dataset
-  num_identical_pairs_data1 <- nrow(paths_data2) - length(different_pairs_data1)
-  num_identical_pairs_data2 <- nrow(paths_data1) - length(different_pairs_data2)
-  
-  # calculate the percentage of identical gene pairs compared to the total number of unique pairs
-  identity_percentage_ReferenceData1 <- (num_identical_pairs_data1 / nrow(paths_data1)) * 100
-  identity_percentage_ReferenceData2 <- (num_identical_pairs_data2 / nrow(paths_data2)) * 100
-  
-  # construct the final report as a list
-  report <- list(
-    identity_percentage_ReferenceData1 = identity_percentage_ReferenceData1,
-    identity_percentage_ReferenceData2 = identity_percentage_ReferenceData2
-  )
-  
-  # return the results
-  return(report)
-}
-
-
-# DEGREE IDENTITY COMPARISON
-
-# function to compare identity percentages at different degrees
-Degree_Identity_Comparison <- function(data1, data2, n) {
-  
-  # convert dataframes to graphs
-  graph_data1 <- Dataframe_To_Graph(data1)
-  graph_data2 <- Dataframe_To_Graph(data2)
-  
-  # find all simple paths in each graph up to the specified degree
-  l_data1 <- unlist(lapply(V(graph_data1) , function(x) all_simple_paths(graph_data1, from=x, cutoff=n)), recursive = FALSE)
-  l_data2 <- unlist(lapply(V(graph_data2) , function(x) all_simple_paths(graph_data2, from=x, cutoff=n)), recursive = FALSE)
-  
-  # calculate the length of each path
-  lengths_paths_data1 <- sapply(l_data1, length)
-  lengths_paths_data2 <- sapply(l_data2, length)
-  
-  # find the maximum path length
-  longueur_max_data1 <- max(lengths_paths_data1)
-  longueur_max_data2 <- max(lengths_paths_data2)
-  
-  # determine the maximum degree to consider
-  n <- min(longueur_max_data1, longueur_max_data2) - 1
-  
-  # initialize dataframe to store identity percentages
-  graph <- data.frame(identity_percentage_ReferenceData1 = numeric(n),
-                      identity_percentage_ReferenceData2 = numeric(n))
-  
-  # loop over degrees and calculate identity percentages
-  for (i in 1:n){
-    # calculate identity percentages only if they are not equal to 0
-    if (Global_Identity_Degree(data1,data2,i)$identity_percentage_ReferenceData1 != 0 ||
-        Global_Identity_Degree(data1,data2,i)$identity_percentage_ReferenceData2 != 0) {
-      graph$identity_percentage_ReferenceData1[i] <- Global_Identity_Degree(data1,data2,i)$identity_percentage_ReferenceData1
-      graph$identity_percentage_ReferenceData2[i] <- Global_Identity_Degree(data1,data2,i)$identity_percentage_ReferenceData2
-    }
-  }
-  
-  # create a dataframe for the graph
-  df <- data.frame(length = seq(1,n),
-                   percentages = c(graph$identity_percentage_ReferenceData1,
-                                   graph$identity_percentage_ReferenceData2),
-                   reference = c(rep(deparse(substitute(data1)), length(graph$identity_percentage_ReferenceData1)),
-                                 rep(deparse(substitute(data2)), length(graph$identity_percentage_ReferenceData2))),
-                   zero_equal = c(graph$identity_percentage_ReferenceData1 == 0 & graph$identity_percentage_ReferenceData2 == 0))
-  
-  # create the plot
-  library(ggplot2)
-  plot <- ggplot(df, aes(x = length, y = as.numeric(percentages), color = reference)) +
-    # display a scatterplot
-    geom_point(aes(color = ifelse(zero_equal, "Both null values", reference))) +
-    # customize legends
-    labs(x = "Length of Paths", 
-         y = "Identity Percentage", 
-         title = "Length of Paths vs Identity Percentages",
-         color = expression(underline("Reference"))) +
-    # customize scales
-    scale_x_continuous(breaks=c(seq(1, n, by = 1))) +
-    # customize text elements
-    theme(strip.text.x = element_text(size = 8),
-          plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
-          legend.title = element_text(size = 10))
-  
-  # print the plot
-  print(plot)
-  
-  # return the dataframe with the results
-  return(graph)
-}
-
-```
-
-
-
-## Analysis of the directness/time delay indices of the edges predicted by TDCor and common with those predicted by DIANE
+### Analysis of the directness/time delay indices of the edges predicted by TDCor and common with those predicted by DIANE
 
 This metric involves analyzing the directness or time delay indices of edges predicted by TDCor and comparing them with edges predicted by DIANE. It examines how consistent the predictions are between the two methods.
 
 
-## Analysis of common clusters
+
+### Analysis of common clusters
 
 This metric involves identifying and analyzing clusters of nodes that are common between the graphs. It examines how nodes are grouped together into clusters and identifies clusters that are present in both graphs, providing insights into common structural patterns.
 
 
-# Display of results
+
+# Example
