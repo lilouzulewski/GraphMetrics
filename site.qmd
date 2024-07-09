@@ -168,7 +168,6 @@ The `Degree_Distribution_Comparison()` function makes it easy to compare the deg
 # Returns:
 #   - A ggplot object visualizing the comparison of degree distributions between the two networks.
 
-
 Degree_Distribution_Comparison <- function(data1, data2){
   
   # load the necessary library for the plot
@@ -212,6 +211,8 @@ Degree 1 global identity examines the proportion of nodes sharing identical conn
 
 However, a problem arises when the two networks to be compared do not have the same number of edges. To overcome this problem, two different identity percentages need to be considered, each using one of the networks as a reference. The number of edges in network $r$ will be used to calculate the reference identity percentage $p_r$.
 
+The `Global_Identity()` function calculates the overall percentage identity of node pairs between two data sets. It starts by checking if one of the datasets is empty. If it is, it returns a list of messages indicating the absence of nodes. It then sorts the pairs in each dataset using the `Sort_Columns()` function to ensure a consistent representation. The pairs are then concatenated into a single string and duplicates are removed. The function identifies the different pairs present in each data set using `setdiff()`. It then calculates the number of identical edges by subtracting the number of different pairs from the total number of pairs in the other dataset. Finally, it calculates the percentage of identical edges out of the total number of unique pairs in each data set and returns these percentages as a list.
+
 ::: {.callout-tip icon=false title="`Global_Identity()`"}
 ```{r}
 #| output: true
@@ -219,6 +220,13 @@ However, a problem arises when the two networks to be compared do not have the s
 #| code-summary: "Click for more code details."
 #| code-overflow: scroll
 #| highlight-style: github
+
+ # Global_Identity() function calculates the global identity percentage of node pairs between two datasets.
+# Parameters:
+#   - data1: Input dataframe containing gene pairs for the first dataset.
+#   - data2: Input dataframe containing gene pairs for the second dataset.
+# Returns:
+#   - A list with the percentage of identical gene pairs in each dataset compared to the other.
 
 Global_Identity <- function(data1, data2) {
   
@@ -241,12 +249,12 @@ Global_Identity <- function(data1, data2) {
   data2 <- Sort_Columns(data2)
   
   # concatenate gene pairs into a new dataframe for each dataset
-  gene_pairs_data1 <- cbind(from = data1$from, to = data1$to, pairs = paste(data1$from, data1$to, sep = "_"))
-  gene_pairs_data2 <- cbind(from = data2$from, to = data2$to, pairs = paste(data2$from, data2$to, sep = "_"))
+  node_pairs_data1 <- cbind(from = data1$from, to = data1$to, pairs = paste(data1$from, data1$to, sep = "_"))
+  node_pairs_data2 <- cbind(from = data2$from, to = data2$to, pairs = paste(data2$from, data2$to, sep = "_"))
   
   # remove duplicates in gene pairs
-  unique_pairs_data1 <- unique(gene_pairs_data1)
-  unique_pairs_data2 <- unique(gene_pairs_data2)
+  unique_pairs_data1 <- unique(node_pairs_data1)
+  unique_pairs_data2 <- unique(node_pairs_data2)
   
   # identify different gene pairs in each dataset
   different_pairs_data1 <- setdiff(unique_pairs_data2[, 3], unique_pairs_data1[, 3])
