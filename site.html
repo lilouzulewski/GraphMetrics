@@ -3384,37 +3384,36 @@ Data format
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Returns:</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   - A ggplot object visualizing the comparison of degree distributions between the two networks.</span></span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>Degree_Distribution_Comparison <span class="ot">&lt;-</span> <span class="cf">function</span>(data1, data2){</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># load the necessary library for the plot</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggplot2)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate degree counts for each database</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  degree_distribution_1 <span class="ot">&lt;-</span> <span class="fu">Degree_Distribution</span>(data1)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  degree_distribution_2 <span class="ot">&lt;-</span> <span class="fu">Degree_Distribution</span>(data2)</span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create dataframe for creating comparison plot</span></span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">data.frame</span>(degree_distribution_1, <span class="at">dataset =</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(data1))),</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>              <span class="fu">data.frame</span>(degree_distribution_2, <span class="at">dataset =</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(data2))))</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create histogram plot with ggplot</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>degree, <span class="at">y=</span><span class="fu">after_stat</span>(count), <span class="at">fill=</span>dataset)) <span class="sc">+</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># display a histogram</span></span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">position=</span><span class="st">&quot;dodge&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize legends</span></span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Degree&quot;</span>, </span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>         <span class="at">y=</span><span class="st">&quot;Number of Nodes&quot;</span>, </span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>         <span class="at">title=</span><span class="st">&quot;Comparison of Degree Distributions&quot;</span>,</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>         <span class="at">fill=</span><span class="fu">expression</span>(<span class="fu">underline</span>(<span class="st">&quot;Dataset&quot;</span>))) <span class="sc">+</span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># specify legend display</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>) <span class="sc">+</span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize text elements</span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">8</span>),</span>
-<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">12</span>, <span class="at">hjust=</span><span class="fl">0.5</span>, <span class="at">face=</span><span class="st">&quot;bold&quot;</span>),</span>
-<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.title=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>))</span>
-<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>Degree_Distribution_Comparison <span class="ot">&lt;-</span> <span class="cf">function</span>(data1, data2){</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># load the necessary library for the plot</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggplot2)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate degree counts for each database</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  degree_distribution_1 <span class="ot">&lt;-</span> <span class="fu">Degree_Distribution</span>(data1)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  degree_distribution_2 <span class="ot">&lt;-</span> <span class="fu">Degree_Distribution</span>(data2)</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create dataframe for creating comparison plot</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(<span class="fu">data.frame</span>(degree_distribution_1, <span class="at">dataset =</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(data1))),</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>              <span class="fu">data.frame</span>(degree_distribution_2, <span class="at">dataset =</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(data2))))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># create histogram plot with ggplot</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>degree, <span class="at">y=</span><span class="fu">after_stat</span>(count), <span class="at">fill=</span>dataset)) <span class="sc">+</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># display a histogram</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_histogram</span>(<span class="at">position=</span><span class="st">&quot;dodge&quot;</span>, <span class="at">alpha=</span><span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize legends</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x=</span><span class="st">&quot;Degree&quot;</span>, </span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>         <span class="at">y=</span><span class="st">&quot;Number of Nodes&quot;</span>, </span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>         <span class="at">title=</span><span class="st">&quot;Comparison of Degree Distributions&quot;</span>,</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>         <span class="at">fill=</span><span class="fu">expression</span>(<span class="fu">underline</span>(<span class="st">&quot;Dataset&quot;</span>))) <span class="sc">+</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># specify legend display</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">guides</span>(<span class="at">color=</span><span class="st">&quot;none&quot;</span>) <span class="sc">+</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># customize text elements</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">strip.text.x=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">8</span>),</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>          <span class="at">plot.title=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">12</span>, <span class="at">hjust=</span><span class="fl">0.5</span>, <span class="at">face=</span><span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>          <span class="at">legend.title=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">10</span>))</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
@@ -3430,6 +3429,7 @@ Data format
 </figure>
 </div>
 <p>However, a problem arises when the two networks to be compared do not have the same number of edges. To overcome this problem, two different identity percentages need to be considered, each using one of the networks as a reference. The number of edges in network <span class="math inline">r</span> will be used to calculate the reference identity percentage <span class="math inline">p_r</span>.</p>
+<p>The <code>Global_Identity()</code> function calculates the overall percentage identity of node pairs between two data sets. It starts by checking if one of the datasets is empty. If it is, it returns a list of messages indicating the absence of nodes. It then sorts the pairs in each dataset using the <code>Sort_Columns()</code> function to ensure a consistent representation. The pairs are then concatenated into a single string and duplicates are removed. The function identifies the different pairs present in each data set using <code>setdiff()</code>. It then calculates the number of identical edges by subtracting the number of different pairs from the total number of pairs in the other dataset. Finally, it calculates the percentage of identical edges out of the total number of unique pairs in each data set and returns these percentages as a list.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled" title="`Global_Identity()`">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3443,56 +3443,63 @@ Data format
 <div class="cell" data-highlight-style="github">
 <details class="code-fold">
 <summary>Click for more code details.</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-overflow-scroll code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Global_Identity <span class="ot">&lt;-</span> <span class="cf">function</span>(data1, data2) {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check if data1 or data2 is empty</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(data1) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">identity_percentage_ReferenceData1 =</span> <span class="st">&quot;NO NODE&quot;</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">identity_percentage_ReferenceData2 =</span> <span class="st">&quot;/&quot;</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(data2) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">identity_percentage_ReferenceData1 =</span> <span class="st">&quot;/&quot;</span>,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">identity_percentage_ReferenceData2 =</span> <span class="st">&quot;NO NODE&quot;</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># sort gene pairs in both datasets</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  data1 <span class="ot">&lt;-</span> <span class="fu">Sort_Columns</span>(data1)</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  data2 <span class="ot">&lt;-</span> <span class="fu">Sort_Columns</span>(data2)</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># concatenate gene pairs into a new dataframe for each dataset</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  gene_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">from =</span> data1<span class="sc">$</span>from, <span class="at">to =</span> data1<span class="sc">$</span>to, <span class="at">pairs =</span> <span class="fu">paste</span>(data1<span class="sc">$</span>from, data1<span class="sc">$</span>to, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  gene_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">from =</span> data2<span class="sc">$</span>from, <span class="at">to =</span> data2<span class="sc">$</span>to, <span class="at">pairs =</span> <span class="fu">paste</span>(data2<span class="sc">$</span>from, data2<span class="sc">$</span>to, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove duplicates in gene pairs</span></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  unique_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">unique</span>(gene_pairs_data1)</span>
-<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  unique_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">unique</span>(gene_pairs_data2)</span>
-<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># identify different gene pairs in each dataset</span></span>
-<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  different_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(unique_pairs_data2[, <span class="dv">3</span>], unique_pairs_data1[, <span class="dv">3</span>])</span>
-<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  different_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(unique_pairs_data1[, <span class="dv">3</span>], unique_pairs_data2[, <span class="dv">3</span>])</span>
-<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the number of identical gene pairs in each dataset</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  num_identical_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">length</span>(unique_pairs_data2[, <span class="dv">3</span>]) <span class="sc">-</span> <span class="fu">length</span>(different_pairs_data1)</span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  num_identical_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">length</span>(unique_pairs_data1[, <span class="dv">3</span>]) <span class="sc">-</span> <span class="fu">length</span>(different_pairs_data2)</span>
-<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the percentage of identical gene pairs compared to the total number of unique pairs</span></span>
-<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  identity_percentage_ReferenceData1 <span class="ot">&lt;-</span> (num_identical_pairs_data1 <span class="sc">/</span> <span class="fu">length</span>(unique_pairs_data1[, <span class="dv">3</span>])) <span class="sc">*</span> <span class="dv">100</span></span>
-<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  identity_percentage_ReferenceData2 <span class="ot">&lt;-</span> (num_identical_pairs_data2 <span class="sc">/</span> <span class="fu">length</span>(unique_pairs_data2[, <span class="dv">3</span>])) <span class="sc">*</span> <span class="dv">100</span></span>
-<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># construct the final report as a list</span></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>  report <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">identity_percentage_ReferenceData1 =</span> identity_percentage_ReferenceData1,</span>
-<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">identity_percentage_ReferenceData2 =</span> identity_percentage_ReferenceData2</span>
-<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return the results</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(report)</span>
-<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-overflow-scroll code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># Global_Identity() function calculates the global identity percentage of node pairs between two datasets.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Parameters:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   - data1: Input dataframe containing gene pairs for the first dataset.</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   - data2: Input dataframe containing gene pairs for the second dataset.</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Returns:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   - A list with the percentage of identical gene pairs in each dataset compared to the other.</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>Global_Identity <span class="ot">&lt;-</span> <span class="cf">function</span>(data1, data2) {</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># check if data1 or data2 is empty</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(data1) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">identity_percentage_ReferenceData1 =</span> <span class="st">&quot;NO NODE&quot;</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">identity_percentage_ReferenceData2 =</span> <span class="st">&quot;/&quot;</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">nrow</span>(data2) <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">identity_percentage_ReferenceData1 =</span> <span class="st">&quot;/&quot;</span>,</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">identity_percentage_ReferenceData2 =</span> <span class="st">&quot;NO NODE&quot;</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    ))</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># sort gene pairs in both datasets</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  data1 <span class="ot">&lt;-</span> <span class="fu">Sort_Columns</span>(data1)</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  data2 <span class="ot">&lt;-</span> <span class="fu">Sort_Columns</span>(data2)</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># concatenate gene pairs into a new dataframe for each dataset</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  node_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">from =</span> data1<span class="sc">$</span>from, <span class="at">to =</span> data1<span class="sc">$</span>to, <span class="at">pairs =</span> <span class="fu">paste</span>(data1<span class="sc">$</span>from, data1<span class="sc">$</span>to, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  node_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="at">from =</span> data2<span class="sc">$</span>from, <span class="at">to =</span> data2<span class="sc">$</span>to, <span class="at">pairs =</span> <span class="fu">paste</span>(data2<span class="sc">$</span>from, data2<span class="sc">$</span>to, <span class="at">sep =</span> <span class="st">&quot;_&quot;</span>))</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># remove duplicates in gene pairs</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  unique_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">unique</span>(node_pairs_data1)</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  unique_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">unique</span>(node_pairs_data2)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># identify different gene pairs in each dataset</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  different_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(unique_pairs_data2[, <span class="dv">3</span>], unique_pairs_data1[, <span class="dv">3</span>])</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>  different_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(unique_pairs_data1[, <span class="dv">3</span>], unique_pairs_data2[, <span class="dv">3</span>])</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the number of identical gene pairs in each dataset</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>  num_identical_pairs_data1 <span class="ot">&lt;-</span> <span class="fu">length</span>(unique_pairs_data2[, <span class="dv">3</span>]) <span class="sc">-</span> <span class="fu">length</span>(different_pairs_data1)</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>  num_identical_pairs_data2 <span class="ot">&lt;-</span> <span class="fu">length</span>(unique_pairs_data1[, <span class="dv">3</span>]) <span class="sc">-</span> <span class="fu">length</span>(different_pairs_data2)</span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calculate the percentage of identical gene pairs compared to the total number of unique pairs</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>  identity_percentage_ReferenceData1 <span class="ot">&lt;-</span> (num_identical_pairs_data1 <span class="sc">/</span> <span class="fu">length</span>(unique_pairs_data1[, <span class="dv">3</span>])) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>  identity_percentage_ReferenceData2 <span class="ot">&lt;-</span> (num_identical_pairs_data2 <span class="sc">/</span> <span class="fu">length</span>(unique_pairs_data2[, <span class="dv">3</span>])) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># construct the final report as a list</span></span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>  report <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">identity_percentage_ReferenceData1 =</span> identity_percentage_ReferenceData1,</span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">identity_percentage_ReferenceData2 =</span> identity_percentage_ReferenceData2</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>  <span class="co"># return the results</span></span>
+<span id="cb5-55"><a href="#cb5-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(report)</span>
+<span id="cb5-56"><a href="#cb5-56" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-57"><a href="#cb5-57" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
