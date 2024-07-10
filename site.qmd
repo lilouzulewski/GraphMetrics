@@ -1,5 +1,6 @@
 ---
 title: "Networks Comparison Tools"
+bibliography: references.bib
 format:
   html:
     page-layout: full
@@ -7,7 +8,9 @@ format:
     code-block-border-left: "#696969"
 ---
 
-This website features network comparison tools applicable to various types of networks. The comparison tools are functions implemented in R. Initially, you will find the source codes and explanations of how these tools are constructed. Subsequently, a detailed example on gene regulatory networks, which are systems of genes interacting to control gene expression levels, is provided. This example illustrates the application of the comparison tools and offers insights into their practical use.
+This website features [network](#glossary) comparison tools applicable to various types of networks. The comparison tools are functions implemented in R. Initially, you will find the source codes and explanations of how these tools are constructed. Subsequently, a detailed example on [gene regulatory networks](#glossary), which are systems of genes interacting to control gene expression levels, is provided. This example illustrates the application of the comparison tools and offers insights into their practical use.
+
+This tab contains a [glossary](#glossary) of key terms for easier understanding.
 
 # Source Code
 
@@ -562,4 +565,16 @@ GlobalIdentity_Length_Comparison <- function(data1, data2, maxlength) {
 ```
 :::
 
-# Example
+# Sample application
+
+Here's an example of an application from biology, specifically gene regulatory networks. In these networks, the nodes represent genes, while the edges symbolise the interactions or regulatory actions between these genes.
+
+## Database and inference methods
+
+The networks used as examples in this section were inferred using the DIANE (@DIANE_InferringAnalyzingGeneRegulatory) and TDCor (@TDCOR_ThesisJulienLavenus) methods, which are two different approaches. The dataset used for inference is the LR dataset, which contains microarray analyses of root bending samples taken every three hours from 6 to 54 hours after gravistimulation (@LR). These data contain log2 expression values for all Arabidopsis genes detected on the microarray. Four independent biological replicates were performed at each time point to ensure the robustness and reliability of the data.
+
+# Glossary {#glossary}
+
+**Network.** A network is a structure made up of nodes (or vertices) and edges (or links) that connect these nodes. The nodes represent individual entities, while the edges represent the relationships or interactions between these entities. Networks can be used to model a wide variety of complex systems, such as social networks, communication networks, biological networks (such as gene regulation networks), and many others.
+
+**Gene regulatory network.** A gene regulatory network is a biological model that represents the interactions between genes in a cell. In this network, the nodes represent the genes and the edges represent the regulatory interactions between these genes. The interactions can involve the activation or repression of gene expression, where certain genes (called transcription factors) control the expression of other genes. This type of network is essential for understanding complex biological processes, such as development, stress response and disease, by illustrating how genes regulate each other to orchestrate cellular functions.
