@@ -4,8 +4,6 @@ bibliography: references.bib
 format:
   html:
     page-layout: full
-    code-block-bg: true
-    code-block-border-left: "#696969"
 ---
 
 This website features [network](#glossary) comparison tools applicable to various types of networks. The comparison tools are functions implemented in R. Initially, you will find the source codes and explanations of how these tools are constructed. Subsequently, a detailed example on [gene regulatory networks](#glossary), which are systems of genes interacting to control gene expression levels, is provided. This example illustrates the application of the comparison tools and offers insights into their practical use.
@@ -224,7 +222,7 @@ The `GlobalIdentity()` function calculates the overall percentage identity of no
 #| code-overflow: scroll
 #| highlight-style: github
 
- # GlobalIdentity() function calculates the global identity percentage of node pairs between two datasets.
+# GlobalIdentity() function calculates the global identity percentage of node pairs between two datasets.
 # Parameters:
 #   - data1: Input dataframe containing node pairs for the first dataset.
 #   - data2: Input dataframe containing node pairs for the second dataset.
@@ -327,8 +325,8 @@ GlobalIdentity_Degree <- function(data1, data2){
   # iterate over each degree
   for (i in 1:n){
     # extract genes lists for each dataset based on degree
-    nodes_list_data1 <- DegreeDistribution(data1)$gene[DegreeDistribution(data1)$degree == i]
-    nodes_list_data2 <- DegreeDistribution(data2)$gene[DegreeDistribution(data2)$degree == i]
+    nodes_list_data1 <- DegreeDistribution(data1)$node[DegreeDistribution(data1)$degree == i]
+    nodes_list_data2 <- DegreeDistribution(data2)$node[DegreeDistribution(data2)$degree == i]
     
     # initialize dataframes to store gene pairs
     all_node_pairs_data1 <- data.frame(from = character(), to = character())
@@ -360,32 +358,34 @@ GlobalIdentity_Degree <- function(data1, data2){
                       percentages = c(identity_percentages$ReferenceData1,
                                       identity_percentages$ReferenceData2),
                       reference = c(rep(deparse(substitute(data1)), length(identity_percentages$ReferenceData1)),
-                                    rep(deparse(substitute(data2)), length(identity_percentages$ReferenceData2))))
+                                    rep(deparse(substitute(data2)), length(identity_percentages$ReferenceData2))),
+                      zero_equal = c(identity_percentages$ReferenceData1 == 0 & identity_percentages$ReferenceData2 == 0))
   
-  # modify the values for red points and NA values to 0
+  # remove rows with "NO NODE" or "/" in percentages
   graph$percentages[graph$percentages %in% c("NO NODE", "/")] <- NA
-  graph$color <- ifelse(is.na(graph$percentages), "Absent degree", as.character(graph$reference))
-  graph$percentages[graph$percentages %in% NA] <- 0
+  
+  # remove rows with NA percentages
+  graph <- graph[!is.na(graph$percentages), ]
+  
+  # assign color based on reference or absence
+  graph$color <- ifelse(graph$percentages == 0 & graph$zero_equal, "Both null values", as.character(graph$reference))
   
   # create the plot
   library(ggplot2)
-  plot <- ggplot(graph, aes(x=degree, 
-                        y=as.numeric(percentages), 
-                        fill=reference, 
-                        color=color)) +
+  plot <- ggplot(graph, aes(x = degree, y = as.numeric(percentages), color = color)) +
     # display a scatterplot
     geom_point() +
     # customize legends
     labs(x = "Degree", 
          y = "Identity Percentage", 
-         title = "Global identity in relation to Degree of Nodes",
+         title = "Degree of nodes VS Identity percentages",
          color = expression(underline("Reference"))) +
     # specify legend display
     guides(fill = "none") +
     # customize text elements
-    theme(strip.text.x = element_text(size=8),
-          plot.title = element_text(size=12, hjust=0.5, face="bold"),
-          legend.title = element_text(size=10))
+    theme(strip.text.x = element_text(size = 8),
+          plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
+          legend.title = element_text(size = 10))
   
   # display the plot
   print(plot)
@@ -448,6 +448,10 @@ GlobalIdentity_Length <- function(data1, data2, length) {
   paths_data1 <- do.call(rbind, paths_data1)
   paths_data2 <- do.call(rbind, paths_data2)
   
+  # convert matrices to dataframes
+  paths_data1 <- as.data.frame(paths_data1)
+  paths_data2 <- as.data.frame(paths_data2)
+  
   # combine paths and create a new column by uniting the paths
   paths_data1 <- data.frame(c(paths_data1, unite(paths_data1, paths, sep="_")))
   paths_data2 <- data.frame(c(paths_data2, unite(paths_data2, paths, sep="_")))
@@ -472,7 +476,7 @@ GlobalIdentity_Length <- function(data1, data2, length) {
   
   # return the results
   return(report)
-
+  
 }
 ```
 :::
@@ -549,7 +553,7 @@ GlobalIdentity_Length_Comparison <- function(data1, data2, maxlength) {
          title = "Length of Paths vs Identity Percentages",
          color = expression(underline("Reference"))) +
     # customize scales
-    scale_x_continuous(breaks=c(seq(1, n, by = 1))) +
+    scale_x_continuous(breaks=c(seq(1, maxlength, by = 1))) +
     # customize text elements
     theme(strip.text.x = element_text(size = 8),
           plot.title = element_text(size = 12, hjust = 0.5, face = "bold"),
@@ -571,10 +575,70 @@ Here's an example of an application from biology, specifically gene regulatory n
 
 ## Database and inference methods
 
-The networks used as examples in this section were inferred using the DIANE (@DIANE_InferringAnalyzingGeneRegulatory) and TDCor (@TDCOR_ThesisJulienLavenus) methods, which are two different approaches. The dataset used for inference is the LR dataset, which contains microarray analyses of root bending samples taken every three hours from 6 to 54 hours after gravistimulation (@LR). These data contain log2 expression values for all Arabidopsis genes detected on the microarray. Four independent biological replicates were performed at each time point to ensure the robustness and reliability of the data.
+The networks used as examples in this section were inferred using the DIANE [@DIANE_InferringAnalyzingGeneRegulatory] and TDCor [@TDCOR_ThesisJulienLavenus] methods, which are two different approaches. The dataset used for inference is the LR dataset, which contains [microarray](#glossary) analyses of root bending samples taken every three hours from 6 to 54 hours after [gravistimulation](#glossary) [@LR]. These data contain log2 expression values for all *Arabidopsis thaliana* genes detected on the microarray. Four independent biological replicates were performed at each time point to ensure the robustness and reliability of the data.
+
+![**Figure 5. Gene regulatory network inferred by DIANE on 152 genes selected from the LR database.** This network has 100 nodes and 220 edges.](./images/DIANENetwork.png)
+
+![**Figure 6. Gene regulatory network inferred by TDCor on 152 genes selected from the LR database.** This network has 94 nodes and 256 edges.](./images/TDCorNetwork.png)
+
+Those visualisations were made with Cytoscape [@cytoscape].
+
+
+## Results of the comparison pipeline
+
+Now, the networks which has been to be compared must be imported. 
+
+::: {.callout-tip icon=false title="Data import"}
+```{r}
+DIANE <- read.table(file = "./databases/DIANENetwork.txt", header = TRUE, sep = ";")
+TDCor <- read.table(file = "./databases/TDCorNetwork.txt", header = TRUE, sep = ";")
+```
+:::
+
+::: {.callout-tip icon=false title="Data preview"}
+```{r}
+head(DIANE)
+head(TDCor)
+```
+:::
+
+::: {.callout-tip icon=false title="Data formatting"}
+```{r}
+DIANE <- SortColumns(DIANE)
+TDCor <- SortColumns(TDCor)
+
+head(DIANE)
+head(TDCor)
+```
+:::
+
+Now, we just have the genes that are in a relation of regulation. 
+
+::: {.callout-tip icon=false title="Degree Distribution"}
+```{r}
+DegreeDistribution_Comparison(DIANE, TDCor)
+```
+:::
+
+```{r}
+GlobalIdentity(DIANE, TDCor)
+```
+
+```{r}
+GlobalIdentity_Degree(DIANE, TDCor)
+```
+
+```{r}
+GlobalIdentity_Length_Comparison(DIANE, TDCor,  3)
+```
+
 
 # Glossary {#glossary}
 
 **Network.** A network is a structure made up of nodes (or vertices) and edges (or links) that connect these nodes. The nodes represent individual entities, while the edges represent the relationships or interactions between these entities. Networks can be used to model a wide variety of complex systems, such as social networks, communication networks, biological networks (such as gene regulation networks), and many others.
 
 **Gene regulatory network.** A gene regulatory network is a biological model that represents the interactions between genes in a cell. In this network, the nodes represent the genes and the edges represent the regulatory interactions between these genes. The interactions can involve the activation or repression of gene expression, where certain genes (called transcription factors) control the expression of other genes. This type of network is essential for understanding complex biological processes, such as development, stress response and disease, by illustrating how genes regulate each other to orchestrate cellular functions.
+
+**Microarray.** A DNA microarray is a collection of DNA molecules fixed in ordered rows on a small surface, which may be glass, silicon or plastic. This recent biotechnology makes it possible to analyse the level of gene expression (transcripts) in a cell, tissue, organ, organism or even a complex mixture, at a given moment and in a given state compared with a reference sample.
+
+**Gravistimulation.** Exposure of plants to a specific gravitational field.
