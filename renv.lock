@@ -478,6 +478,19 @@
         "vctrs"
       ]
     },
+    "tidyr": {
+      "Package": "tidyr",
+      "Version": "1.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "dcb1c1f3b7c5a6d8b8e5b8c9a1f24e79",
+      "Requirements": [
+        "dplyr",
+        "magrittr",
+        "tibble",
+        "vctrs"
+      ]
+    }
     "tinytex": {
       "Package": "tinytex",
       "Version": "0.44",
