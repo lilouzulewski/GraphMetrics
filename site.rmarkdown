@@ -6,6 +6,7 @@ format:
     page-layout: full
 ---
 
+
 This website features [network](#glossary) comparison tools applicable to various types of networks. The comparison tools are functions implemented in R. Initially, you will find the source codes and explanations of how these tools are constructed. Subsequently, a detailed example on [gene regulatory networks](#glossary), which are systems of genes interacting to control gene expression levels, is provided. This example illustrates the application of the comparison tools and offers insights into their practical use.
 
 This tab contains a [glossary](#glossary) of key terms for easier understanding.
@@ -25,6 +26,7 @@ To apply all the following functions to your dataset, it must contain two column
 Firstly, the `SortColumns()` function is designed to standardize the representation of node pairs in a dataset by ensuring they are consistently ordered, irrespective of their original sequence. This function generates a new data frame where each row represents a pair of connected nodes in the network. For each pair, the function sorts the nodes alphabetically or numerically by comparing the values in the `from` and `to` columns. This guarantees a uniform representation of node pairs. Additionally, it eliminates duplicate rows to ensure that each pair is unique, and finally returns the sorted data frame.
 
 ::: {.callout-tip icon=false title="`SortColumns()`"}
+
 ```{r}
 #| output: true
 #| code-fold: true
@@ -51,11 +53,13 @@ SortColumns <- function(data) {
   
 }
 ```
+
 :::
 
 Next, the `DataframeToGraph()` function converts a dataframe of node pairs into a graph object. First, it sorts the pairs in the input dataframe to ensure consistent representation, then concatenates the `from` and `to` columns into a new dataframe named even, removing any duplicate rows. Finally, it creates a graph object from this dataframe of unique pairs using the `graph_from_data_frame()` function and returns the constructed graph object.
 
 ::: {.callout-tip icon=false title="`DataframeToGraph()`"}
+
 ```{r}
 #| output: true
 #| code-fold: true
@@ -91,6 +95,7 @@ DataframeToGraph <- function(data){
 
 }
 ```
+
 :::
 
 Now that your database is in the correct format, you can apply the [metrics](#metrics) below.
@@ -108,6 +113,7 @@ This measure examines the distribution of the number of connections (degrees) of
 The `DegreeDistribution()` function computes the degree distribution of nodes in a network represented by an input dataframe. It starts by sorting and removing duplicates from pairs of nodes, then collects all the unique nodes present in these pairs. It then traverses these unique nodes to count the number of links associated with each through the columns of the dataframe. The results are then structured into a new dataframe that lists each node with its corresponding degree. Finally, the function ensures that any duplicate entries are removed to ensure that each node is only represented once in the final result.
 
 ::: {.callout-tip icon=false title="`DegreeDistribution()`"}
+
 ```{r}
 #| output: true
 #| code-fold: true
@@ -150,11 +156,13 @@ DegreeDistribution <- function(data) {
   
 }
 ```
+
 :::
 
 The `DegreeDistribution_Comparison()` function makes it easy to compare the degree distributions of nodes between two datasets representing different networks. It starts by loading the `ggplot2` graphing library. It then calculates the degree distributions for each dataset using the `DegreeDistribution()` function and combines these results into a df dataframe. This dataframe is structured to contain information about each unique node and its degree, as well as an indication of which dataset it belongs to (`data1` or `data2`). Using `ggplot2`, the function generates a bar chart showing the degree distributions of the two networks. Each bar is coloured according to the corresponding dataset, allowing an immediate visual comparison of the network structures in terms of the distribution of node connections. This graphical approach helps to quickly identify similarities and differences in the degree distributions between the two networks being analysed.
 
 ::: {.callout-tip icon=false title="`DegreeDistribution_Comparison()`"}
+
 ```{r}
 #| output: true
 #| code-fold: true
@@ -200,6 +208,7 @@ DegreeDistribution_Comparison <- function(data1, data2){
   
 }
 ```
+
 :::
 
 
@@ -215,6 +224,7 @@ However, a problem arises when the two networks to be compared do not have the s
 The `GlobalIdentity()` function calculates the overall percentage identity of node pairs between two data sets. It starts by checking if one of the datasets is empty. If it is, it returns a list of messages indicating the absence of nodes. It then sorts the pairs in each dataset using the `SortColumns()` function to ensure a consistent representation. The pairs are then concatenated into a single string and duplicates are removed. The function identifies the different pairs present in each data set using `setdiff()`. It then calculates the number of identical edges by subtracting the number of different pairs from the total number of pairs in the other dataset. Finally, it calculates the percentage of identical edges out of the total number of unique pairs in each data set and returns these percentages as a list.
 
 ::: {.callout-tip icon=false title="`GlobalIdentity()`"}
+
 ```{r}
 #| output: true
 #| code-fold: true
@@ -280,6 +290,7 @@ GlobalIdentity <- function(data1, data2) {
   
 }
 ```
+
 :::
 
 
@@ -294,6 +305,7 @@ To construct this metric, the same calculation as the previous metric is used fo
 The `GlobalIdentity_Degree()` function calculates and compares the degree identity percentages between two node pair data sets. It starts by determining the maximum degree across the two datasets using the `DegreeDistribution()` function. It then initialises a data frame to store the identity percentages for each degree. For each degree, the function extracts lists of matching nodes for each dataset, then selects pairs of matching nodes and eliminates duplicates. Identity percentages are calculated for each degree using the `GlobalIdentity()` function and stored in the dataframe. The function then creates a dataframe for the graph, replacing the `NO NODE` and `/` values with NA values, then changing the NA values to $0$ for easier viewing. The function uses `ggplot2` to create and fit a scatterplot showing the distribution of degrees versus percent identity. Finally, it displays the graph and returns the percent identity dataframe.
 
 ::: {.callout-tip icon=false title="`GlobalIdentity_Degree()`"}
+
 ```{r}
 #| output: true
 #| code-fold: true
@@ -395,6 +407,7 @@ GlobalIdentity_Degree <- function(data1, data2){
   
 }
 ```
+
 :::
 
 
@@ -407,6 +420,7 @@ The last metric studied is the percentage of identity between two inferred netwo
 The `GlobalIdentity_Length()` function compares the percentage identity of paths of a given length between two data sets representing networks. It first converts the datasets into graphs, then finds all simple paths in each graph up to a given length. The paths are then filtered to include only those of the specified length. These paths are converted to character identifiers and combined into data frames. The function then identifies pairs of different nodes in each dataset and calculates the number of identical pairs. The percentages of node pair identity out of the total number of unique pairs are calculated and returned as a list.
 
 ::: {.callout-tip icon=false title="`GlobalIdentity_Length()`"}
+
 ```{r}
 #| output: true
 #| code-fold: true
@@ -479,11 +493,13 @@ GlobalIdentity_Length <- function(data1, data2, length) {
   
 }
 ```
+
 :::
 
 The `GlobalIdentity_Length_Comparison()` function compares the percentage identity of paths of different lengths between two datasets representing networks. It first converts the datasets into graphs, then finds all simple paths in each graph up to a given maximum length. It then calculates the length of each path and determines the maximum length of the paths in each graph. Using this maximum length, the function initialises a data frame to store the identity percentages. For each path length it calculates the identity degree using the `GlobalIdentity_Length()` function and stores it in the dataframe. Finally, it creates a graph using `ggplot2` to visualise the identity percentages as a function of path length and returns the dataframe containing the results.
 
 ::: {.callout-tip icon=false title="`GlobalIdentity_Length_Comparison()`"}
+
 ```{r}
 #| output: true
 #| code-fold: true
@@ -567,6 +583,7 @@ GlobalIdentity_Length_Comparison <- function(data1, data2, maxlength) {
 
 }
 ```
+
 :::
 
 # Sample application
@@ -589,10 +606,12 @@ Those visualisations were made with Cytoscape [@cytoscape].
 To start using the comparison pipeline, we need to import the network data. This can be done using the following command:
 
 ::: {.callout-tip icon=false title="Data import"}
+
 ```{r}
 DIANE <- read.table(file = "./databases/DIANENetwork.txt", header = TRUE, sep = ";")
 TDCor <- read.table(file = "./databases/TDCorNetwork.txt", header = TRUE, sep = ";")
 ```
+
 :::
 
 This command reads the data from the specified files and stores them in the variables DIANE and TDCor.
@@ -600,10 +619,12 @@ This command reads the data from the specified files and stores them in the vari
 To ensure the good importation, you can use this next command to visualize the 6 first rows of your imported database.
 
 ::: {.callout-tip icon=false title="Data preview"}
+
 ```{r}
 head(DIANE)
 head(TDCor)
 ```
+
 :::
 
 This will display a preview of the data, helping you verify that the import was successful.
@@ -611,6 +632,7 @@ This will display a preview of the data, helping you verify that the import was 
 Next, we need to ensure that the columns in both datasets are properly sorted. This is important for consistency in downstream analyses:
 
 ::: {.callout-tip icon=false title="Data formatting"}
+
 ```{r}
 DIANE <- SortColumns(DIANE)
 TDCor <- SortColumns(TDCor)
@@ -618,6 +640,7 @@ TDCor <- SortColumns(TDCor)
 head(DIANE)
 head(TDCor)
 ```
+
 :::
 
 After sorting the columns, you can use the head function again to verify the changes.
@@ -625,9 +648,11 @@ After sorting the columns, you can use the head function again to verify the cha
 To analyze and compare the degree distributions between the two networks, you can use the following function which compares the degree distributions of the nodes in the two networks:
 
 ::: {.callout-tip icon=false title="Degree Distribution"}
+
 ```{r}
 DegreeDistribution_Comparison(DIANE, TDCor)
 ```
+
 :::
 
 We can observe the degree distribution of nodes in the networks previously inferred by the two studied methods. The x-axis represents the degree of the nodes, which is the number of connections a node has with other nodes in the network. A high value indicates that the node is highly connected and central to many regulations. The y-axis shows the number of nodes with a certain degree. A wider distribution signifies greater variability in the connections between nodes. Overall, this first metric provides an idea of the obvious differences between the two inferred GRNs: the topology of the networks will therefore not be the same depending on the method used.
@@ -635,9 +660,11 @@ We can observe the degree distribution of nodes in the networks previously infer
 To calculate the overall similarity between the two networks, use the `GlobalIdentity()` function. This function computes the global identity percentage between the networks, providing a single measure of similarity.
 
 ::: {.callout-tip icon=false title="Global Identity"}
+
 ```{r}
 GlobalIdentity(DIANE, TDCor)
 ```
+
 :::
 
 This result allows us to compare the similarities of inferring GRNs over time. The identity percentages at degree 1 range between $6.1\%$ and $7.4\%$ for both methods.
@@ -645,9 +672,11 @@ This result allows us to compare the similarities of inferring GRNs over time. T
 For a more detailed comparison based on node degrees, use the `GlobalIdentity_Degree()` function which calculates the identity percentage for nodes of each degree, giving a degree-specific similarity measure.
 
 ::: {.callout-tip icon=false title="Degree of Nodes as a Function of Identity Percentage"}
+
 ```{r}
 GlobalIdentity_Degree(DIANE, TDCor)
 ```
+
 :::
 
 That figure presents three sets of points representing identity percentages using each method as a reference and a category for zero identity percentages. The maximum node degree for the identity percentage is capped at $11$, as the GRN inferred by DIANE contains no nodes with a degree higher than $11$.
@@ -659,9 +688,11 @@ This figure allows for a visual comparison of how node degree impacts the identi
 To compare the networks based on the lengths of paths within them, use the `GlobalIdentity_Length_Comparison()` function:
 
 ::: {.callout-tip icon=false title="Degree of Nodes as a Function of Identity Percentage"}
+
 ```{r}
 GlobalIdentity_Length_Comparison(DIANE, TDCor,  6)
 ```
+
 :::
 
 It illustrates the relationship between path length and identity percentage in GRNs. Additionally, a category is assigned to path lengths with zero identity percentages according to both references.
@@ -681,3 +712,4 @@ These insights emphasize the challenges in accurately capturing longer and more 
 **Microarray.** A DNA microarray is a collection of DNA molecules fixed in ordered rows on a small surface, which may be glass, silicon or plastic. This recent biotechnology makes it possible to analyse the level of gene expression (transcripts) in a cell, tissue, organ, organism or even a complex mixture, at a given moment and in a given state compared with a reference sample.
 
 **Gravistimulation.** Exposure of plants to a specific gravitational field.
+
