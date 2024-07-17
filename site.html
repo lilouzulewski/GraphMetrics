@@ -3865,7 +3865,7 @@ Shannon, Paul, Andrew Markiel, Owen Ozier, Nitin S. Baliga, Jonathan T. Wang, Da
 </div></div></section>
 <section id="results-of-the-comparison-pipeline" class="level2">
 <h2 class="anchored" data-anchor-id="results-of-the-comparison-pipeline">Results of the comparison pipeline</h2>
-<p>Now, the networks which has been to be compared must be imported.</p>
+<p>To start using the comparison pipeline, we need to import the network data. This can be done using the following command:</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled" title="Data import">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3882,6 +3882,8 @@ Data import
 </div>
 </div>
 </div>
+<p>This command reads the data from the specified files and stores them in the variables DIANE and TDCor.</p>
+<p>To ensure the good importation, you can use this next command to visualize the 6 first rows of your imported database.</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled" title="Data preview">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3937,6 +3939,8 @@ Data preview
 </div>
 </div>
 </div>
+<p>This will display a preview of the data, helping you verify that the import was successful.</p>
+<p>Next, we need to ensure that the columns in both datasets are properly sorted. This is important for consistency in downstream analyses:</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled" title="Data formatting">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -3974,7 +3978,8 @@ Data formatting
 </div>
 </div>
 </div>
-<p>Now, we just have the genes that are in a relation of regulation.</p>
+<p>After sorting the columns, you can use the head function again to verify the changes.</p>
+<p>To analyze and compare the degree distributions between the two networks, you can use the following function which compares the degree distributions of the nodes in the two networks:</p>
 <div class="callout callout-style-default callout-tip no-icon callout-titled" title="Degree Distribution">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -4474,6 +4479,18 @@ Degree Distribution
 </div>
 </div>
 </div>
+<p>We can observe the degree distribution of nodes in the networks previously inferred by the two studied methods. The x-axis represents the degree of the nodes, which is the number of connections a node has with other nodes in the network. A high value indicates that the node is highly connected and central to many regulations. The y-axis shows the number of nodes with a certain degree. A wider distribution signifies greater variability in the connections between nodes. Overall, this first metric provides an idea of the obvious differences between the two inferred GRNs: the topology of the networks will therefore not be the same depending on the method used.</p>
+<p>To calculate the overall similarity between the two networks, use the <code>GlobalIdentity()</code> function. This function computes the global identity percentage between the networks, providing a single measure of similarity.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled" title="Global Identity">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Global Identity
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">GlobalIdentity</span>(DIANE, TDCor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -4484,6 +4501,20 @@ $identity_percentage_ReferenceData2
 [1] 6.882591</code></pre>
 </div>
 </div>
+</div>
+</div>
+<p>This result allows us to compare the similarities of inferring GRNs over time. The identity percentages at degree 1 range between <span class="math inline">6.1\%</span> and <span class="math inline">7.4\%</span> for both methods.</p>
+<p>For a more detailed comparison based on node degrees, use the <code>GlobalIdentity_Degree()</code> function which calculates the identity percentage for nodes of each degree, giving a degree-specific similarity measure.</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled" title="Degree of Nodes as a Function of Identity Percentage">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Degree of Nodes as a Function of Identity Percentage
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">GlobalIdentity_Degree</span>(DIANE, TDCor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -5009,12 +5040,34 @@ $identity_percentage_ReferenceData2
 22     22                /          NO NODE</code></pre>
 </div>
 </div>
+</div>
+</div>
+<p>That figure presents three sets of points representing identity percentages using each method as a reference and a category for zero identity percentages. The maximum node degree for the identity percentage is capped at <span class="math inline">11</span>, as the GRN inferred by DIANE contains no nodes with a degree higher than <span class="math inline">11</span>.</p>
+<p>For low and high degrees, the nodes identified by the two methods differ significantly. Specifically, the identity percentages are zero for nodes with degrees <span class="math inline">1</span>, <span class="math inline">2</span>, <span class="math inline">9</span>, <span class="math inline">10</span>, and <span class="math inline">11</span>. The identity percentages for medium degrees (<span class="math inline">3</span> and <span class="math inline">4</span>) show a similar trend, with both methods achieving approximately <span class="math inline">3\%</span> identity.</p>
+<p>This figure allows for a visual comparison of how node degree impacts the identity percentage of GRNs inferred by DIANE and TDCor. Generally, a slight increase in identity percentage with higher node degrees, up to degree <span class="math inline">8</span>, suggests that nodes with more connections are better captured by both methods. According to this metric, both methods appear to be slightly more effective for nodes with medium degrees.</p>
+<p>To compare the networks based on the lengths of paths within them, use the <code>GlobalIdentity_Length_Comparison()</code> function:</p>
+<div class="callout callout-style-default callout-tip no-icon callout-titled" title="Degree of Nodes as a Function of Identity Percentage">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Degree of Nodes as a Function of Identity Percentage
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">GlobalIdentity_Length_Comparison</span>(DIANE, TDCor,  <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">GlobalIdentity_Length_Comparison</span>(DIANE, TDCor,  <span class="dv">6</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
 <pre><code>Error in library(tidyr): there is no package called &#39;tidyr&#39;</code></pre>
 </div>
 </div>
+</div>
+</div>
+<p>It illustrates the relationship between path length and identity percentage in GRNs. Additionally, a category is assigned to path lengths with zero identity percentages according to both references.</p>
+<p>As path length increases, the identity percentage between the inferred GRNs decreases significantly for both methods. This indicates that shorter paths are more frequently found in each network compared to longer paths. With increasing path lengths, the differences between the GRNs become more pronounced. This trend suggests that inferred GRNs show more discrepancies as the path length grows.</p>
+<p>For paths consisting of 6 nodes or more, the identity percentages drop to zero, indicating that the identified paths differ completely between the two methods. For the longest paths, both methods exhibit very low identity percentages, which is expected as indirect relationships are generally harder to infer accurately.</p>
+<p>These insights emphasize the challenges in accurately capturing longer and more complex regulatory paths in gene regulatory networks using different inference methods.</p>
 </section>
 </section>
 <section id="glossary" class="level1">
